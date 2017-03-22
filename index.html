@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>首页</title>
+		<link rel="import" href="./modules/_template_mate.html?__inline">
+	</head>
+	<body class="page_index">
+    <div id="app">
+	    <mt-swipe :auto="0">
+	      <mt-swipe-item class="slide"><img src="../images/tmp_banner.jpg"/></mt-swipe-item>
+	      <mt-swipe-item class="slide">2</mt-swipe-item>
+	      <mt-swipe-item class="slide">3</mt-swipe-item>
+	    </mt-swipe>
+	    
+	    <div class="photo_list">
+		  	<ul>
+		  		<li v-for="(i,index) in 7" v-bind:class="{ bigone: index==6 }">
+		  			<a href="./date.html">
+		  				<img src="../images/tmp_man.jpg"/>
+		  				<span class="title">证件照{{index}}</span><font v-if="index==6">(电话提前预约)</font>
+		  				<span class="sub_tit">Document photo</span>
+		  				<span class="big_tit">Document photo</span>
+		  			</a>
+		  		</li>
+		  	</ul>
+		</div>
+	</div>
+    <link rel="import" href="./modules/_template_script.html?__inline">
+    <script type="text/javascript">
+    	var app = new Vue({
+		  el: '#app',
+		  data: {
+		    
+		  }
+		});
+    </script>
+	</body>
+</html>

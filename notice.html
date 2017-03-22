@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>预约须知</title>
+		<link rel="import" href="./modules/_template_mate.html?__inline">
+	</head>
+	<body class="page_notice">
+	<div id="app">
+		<div class="title">《预约须知》</div>
+		<div class="content">
+			<p>预约成功后订单不可取消，可更改一次，<br /> 如需取消，退款规则如下：
+			</p>
+			<p>距拍摄时间<span class="num">72</span>小时以上取消订单，退<span class="red">99%</span>订金。<br /> 距拍摄时间
+				<span class="num">48</span>至<span class="num">72</span>小时取消订单，退<span class="red">50%</span>订金。<br /> 距拍摄时间不足
+				<span class="num">48</span>小时取消订单，<span class="red">不退订金。</span><br /> 如未按照预定时间到店，订单则视为放弃，
+				<br />
+				<span class="red">订金不可退还。</span></p>
+			<p>除登记照、couple照外，仅支持单人预约，<br /> 多人请分别预约。
+			</p>
+			<p>我们会提供精修后的数码底片，<br />
+				<span class="red">不提供未经处理的原始拍摄文件。</span></p>
+			<p>请以最佳的精神状态在白描迎接最美的自己。</p>
+		</div>
+		<div class="agree" v-bind:class="{ active: isActive }" v-on:click="isActive=!isActive">同意以上条款</div>
+		<div class="ctrl">
+			<mt-button type="default" disabled v-show="!isActive">开始预约</mt-button>
+			<mt-button type="primary" v-show="isActive" v-on:click="go_index">开始预约</mt-button>
+		</div>
+	</div>
+    
+    <link rel="import" href="./modules/_template_script.html?__inline">
+    <script type="text/javascript">
+    	var app = new Vue({
+		  el: '#app',
+		  data: {
+		    isActive:false
+		  },
+		  methods:{
+		  	go_index:function(){
+		  		window.location.href="index.html"
+		  	}
+		  }
+		})
+    </script>
+	</body>
+</html>

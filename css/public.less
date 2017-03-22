@@ -1,0 +1,137 @@
+@import 'unit/reset.less';
+@import 'unit/global.less';
+@import 'unit/function.less';
+@import 'unit/mint-ui@2.2.1.css';
+
+html{color:#5A5A5A;font-family:'Microsoft Yahei','宋体',Arial;}
+body{max-width: 750px;margin: 0 auto;}
+
+//预约须知页
+.page_notice{
+    background:#FFFFFF;
+    .title{
+        color:@c_green;
+        font-size: @f_40;
+        text-align: center;
+        line-height: 2rem;
+    }
+    .content{
+        padding: 0 0.7rem;
+        p{
+            font-size: @f_30;
+            color: @c_deepgray;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+            span.num{
+                color: @c_green;
+                font-size: @f_30;
+            }
+            span.red{
+                color: @c_red;
+                font-size: @f_30;
+            }
+        };
+    }
+    .agree{
+        font-size: @f_24;
+        color: @c_green;
+        padding-left:0.5rem;
+        display: inline-block;
+        float: right;margin-right: 0.7rem;
+        background-image: url(../images/tick_0.png);
+        background-repeat: no-repeat;
+        background-size: 0.5rem 0.4rem;
+        &.active{
+            background-image: url(../images/tick_1.png);
+            background-repeat: no-repeat;
+            background-size: 0.5rem 0.4rem;
+        }
+    }
+    .ctrl{
+        text-align: center;
+        clear: both;
+        .mint-button{
+            font-size: @f_30;
+        }
+        .mint-button--primary{
+            background-color: @c_green;
+        }
+    }
+}
+
+// 套餐列表页
+.page_index {
+    .photo_list {
+        padding: 20/75rem;
+        ul {
+            li {
+                position: relative;
+                width: 332/75rem;
+                height: 338/75rem;
+                box-shadow: 1px 1px 10px #A9ACB1;
+                margin: 10/75rem;
+                display: inline-block;
+                a {
+                    display: block;
+                    color: #5ca89f;
+                    img {
+                        width: 100%;
+                        height: 254/75rem;
+                        display: block;
+                        margin-bottom: 0.2rem;
+                    }
+                    .title {
+                        font-size: 36/75rem;
+                        font-weight: bold;
+                        line-height: 1;
+                        padding-left: 0.3rem;
+                    }
+                    .sub_tit {
+                        font-size: 24/75rem;
+                        line-height: 1;
+                        padding-left: 0.3rem;
+                        margin-top: -2px;
+                        display: block;
+                    }
+                    .big_tit {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        line-height: 254/75rem;
+                        width: 100%;
+                        text-align: center;
+                        color: #FFFFFF;
+                        opacity: 0.75;
+                        font-size: 40/75rem;
+                        font-weight: bold;
+                    }
+                    font {
+                        font-size: 0.32rem;
+                    }
+                }
+                &.bigone {
+                    width: 684/75rem;
+                }
+            }
+        }
+    }
+    .mint-swipe {
+        height: 500/75rem;
+        color: #fff;
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .mint-swipe-item {
+        line-height: 500/75rem;
+    }
+
+    .slide {
+        background-color: #0089dc;
+        color: #fff;
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
