@@ -41,10 +41,12 @@ body{max-width: 750px;margin: 0 auto;}
         background-image: url(../images/tick_0.png);
         background-repeat: no-repeat;
         background-size: 0.5rem 0.4rem;
+        background-position-y: center;
         &.active{
             background-image: url(../images/tick_1.png);
             background-repeat: no-repeat;
             background-size: 0.5rem 0.4rem;
+            background-position-y: center;
         }
     }
     .ctrl{
@@ -134,4 +136,51 @@ body{max-width: 750px;margin: 0 auto;}
             height: 100%;
         }
     }
+}
+
+
+.page_orderlist{
+    .mint-navbar{
+    margin-bottom: 0.2rem;
+    .mint-tab-item{
+        color: #333;
+    }
+}
+    
+.page-loadmore {
+  .page-loadmore-listitem {
+    background: #FFFFFF;
+    border-bottom: solid 1px #eee;
+    margin-bottom: 0.2rem;
+    div{padding: 0.2rem;}
+    .head{
+        border-bottom: 1px solid #F1F1F1;
+        font{float: right;}
+    }
+    .cont{
+        border-bottom: 1px solid #F1F1F1;
+    }
+    .foot{
+        text-align: right;
+    }
+  }
+  .page-loadmore-wrapper {
+    overflow: scroll;
+  }
+  .mint-spinner {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.mint-loadmore-bottom {
+    span {
+      display: inline-block;
+      transition: .2s linear;
+      vertical-align: middle;
+      &.is-rotate {
+        transform: rotate(180deg);
+      }
+    }
+}
 }

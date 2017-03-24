@@ -1,0 +1,97 @@
+{
+  "status": 0,
+  "errCode": 0,
+  "message": "没有错误",
+  "result": {
+    "countPage": 3,
+    "list": [{
+      "type": "type_1",
+      "id": 5,
+      "time": "2017.02.28 周二",
+      "src": "img/tmp/pro.png",
+      "title": "简花·单品鲜花月套餐",
+      "details": "1个月,花剪(梦幻粉)+59元,1组/4包+5元,蓝调花瓶+20元",
+      "price": "135.00",
+      "countDown":5,
+      "flowList": [{
+        "name": "已签收",
+        "status": 2
+      }, {
+        "name": "02.28",
+        "status": 1
+      }, {
+        "name": "02.28",
+        "status": 3
+      }, {
+        "name": "02.28",
+        "status": 0
+      }, {
+        "name": "02.28",
+        "status": 0
+      }]
+    },{
+      "type": "type_2",
+      "id": 5,
+      "orderId": "W201702143245348487",
+      "address": "北京市朝阳区朝阳公园",
+      "time": "2017.02.28 周二",
+      "src": "img/tmp/pro.png",
+      "title": "简花·单品鲜花月套餐",
+      "details": "1个月,花剪(梦幻粉)+59元,1组/4包+5元,蓝调花瓶+20元",
+      "price": "135.00",
+      "countDown":0,
+      "flowList": []
+    },{
+      "type": "type_2",
+      "id": 5,
+      "orderId": "W201702143245348487",
+      "address": "北京市朝阳区朝阳公园",
+      "time": "2017.02.28 周二",
+      "src": "img/tmp/pro.png",
+      "title": "简花·单品鲜花月套餐",
+      "details": "1个月,花剪(梦幻粉)+59元,1组/4包+5元,蓝调花瓶+20元",
+      "price": "135.00",
+      "countDown":0,
+      "flowList": []
+    },{
+      "type": "type_2",
+      "id": 5,
+      "orderId": "W201702143245348487",
+      "address": "北京市朝阳区朝阳公园",
+      "time": "2017.02.28 周二",
+      "src": "img/tmp/pro.png",
+      "title": "简花·单品鲜花月套餐",
+      "details": "1个月,花剪(梦幻粉)+59元,1组/4包+5元,蓝调花瓶+20元",
+      "price": "135.00",
+      "countDown":0,
+      "flowList": []
+    }, {
+      "type": "type_3",
+      "id": 5,
+      "orderId": "W201702143245348487",
+      "address": "北京市朝阳区朝阳公园",
+      "time": "2017.02.28 周二",
+      "src": "img/tmp/pro.png",
+      "title": "简花·单品鲜花月套餐",
+      "details": "1个月,花剪(梦幻粉)+59元,1组/4包+5元,蓝调花瓶+20元",
+      "price": "135.00",
+      "countDown":"500",
+      "flowList": [{
+        "name": "已签收",
+        "status": 2
+      }, {
+        "name": "02.28",
+        "status": 1
+      }, {
+        "name": "02.28",
+        "status": 0
+      }, {
+        "name": "02.28",
+        "status": 0
+      }, {
+        "name": "02.28",
+        "status": 0
+      }]
+    }]
+  }
+}

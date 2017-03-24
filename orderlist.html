@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>订单列表</title>
+		<link rel="import" href="./modules/_template_mate.html?__inline">
+	</head>
+	<body class="page_orderlist">
+	<div id="app">
+		<mt-navbar v-model="selected">
+		  <mt-tab-item id="0" @click.native.prevent="reLoadList">全部订单</mt-tab-item>
+		  <mt-tab-item id="1" @click.native.prevent="reLoadList">已付款</mt-tab-item>
+		  <mt-tab-item id="2" @click.native.prevent="reLoadList">未付款</mt-tab-item>
+		  <mt-tab-item id="3" @click.native.prevent="reLoadList">已退款</mt-tab-item>
+		</mt-navbar>
+    	<div class="page-loadmore">
+		    <div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }" id="mybox">
+		        <ul class="page-loadmore-list">
+		          <li v-for="item in orderList" class="page-loadmore-listitem">
+		          	<div class="head">日期：<span>{{item.time}}</span><font>已付款</font></div>
+		          	<div class="cont">
+		          		<span>ID:</span>{{item.id}} <br />
+		          		<span>标题：</span>{{item.title}} <br />
+		          		<span>简介：</span>{{item.details}}
+		          	</div>
+		          	<div class="foot">价格：<font>￥319</font></div>
+		          </li>
+		        </ul>
+		        <div slot="bottom" class="mint-loadmore-bottom">
+		          <span v-show="bottomStatus !== 'loading'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
+		          <span v-show="bottomStatus === 'loading'">
+		            <mt-spinner type="snake"></mt-spinner>
+		          </span>
+		        </div>
+		    </div>
+		</div>
+	</div>
+    
+    <link rel="import" href="./modules/_template_script.html?__inline">
+    <script type="text/javascript">
+    	var app = new Vue({
+			el: '#app',
+			data: {
+				nums: [1, 2, 3, 4, 5, 6],
+				active: 'tab-container1',
+				selected: '0',
+				navList: [{ "type": "type_0", "url": "./data/orderList.json" },
+					{ "type": "type_1", "url": "./data/orderList.json" },
+					{ "type": "type_2", "url": "./data/orderList.json" },
+					{ "type": "type_3", "url": "./data/orderList.json" }
+				],
+				list: [],
+				orderList: [],
+				allLoaded: false,
+				bottomStatus: '',
+				wrapperHeight: 0,
+				fetchError: null,
+				isReload: true,
+				page: 0,
+				scrolled: false,
+				isLoading: true
+			},
+			components: {},
+			methods: {
+				fetchData(url) {
+					var self = this;
+					axios.get('./data/orderList.json')
+						.then(function(response) {
+							console.log(87);
+							if(response.data.status == 0) {
+								if(self.isReload == true) {
+									document.getElementById("mybox").scrollTop = 0;
+									self.orderList = []; //清空列表
+									self.orderList = self.orderList.concat(response.data.result.list);
+									self.isReload = false;
+								} else {
+									self.orderList = self.orderList.concat(response.data.result.list);
+								}
+								self.bottomStatus = "";
+								self.isLoading = true;
+							}
+						}).catch(function(error) {
+							console.log(error);
+						})
+				},
+				reLoadList() {
+					this.isReload = true;
+					this.fetchData(this.navList[this.selected].url);
+				},
+				addList() {
+					this.fetchData(this.navList[this.selected].url);
+				}
+			},
+			mounted() {
+				this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top;
+				var scrollBox = document.getElementById("mybox");
+				var _this = this;
+				scrollBox.onscroll = function() {
+					if(scrollBox.scrollTop >= scrollBox.childNodes[0].scrollHeight - scrollBox.clientHeight && _this.isLoading) {
+						_this.isLoading = false;
+						_this.bottomStatus = "drop";
+						setTimeout(function() {
+							_this.fetchData(_this.navList[_this.selected].url);
+						}, 500);
+					}
+				}
+			},
+			created() {
+				this.fetchData(this.navList[this.selected].url);
+			}
+		})
+    </script>
+	</body>
+</html>
