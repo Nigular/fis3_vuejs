@@ -7,9 +7,9 @@
       "user_id": "1",
       "product_id": "1",
       "product_info": "null",
-      "book_date": "2017.03.19",
-      "book_time": "10:00",
-      "user_name": "jojo",
+      "book_date": "2017.03.19",	//拍摄日期
+      "book_time": "10:00",		//拍摄时间
+      "user_name": "赵雷",
       "user_telephone": "15633895689",
       "user_sex": "0",
       "user_birthday": "0",

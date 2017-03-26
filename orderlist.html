@@ -5,7 +5,7 @@
 		<link rel="import" href="./modules/_template_mate.html?__inline">
 	</head>
 	<body class="page_orderlist">
-	<div id="app">
+	<div id="app" v-cloak>
 		<mt-navbar v-model="selected">
 		  <mt-tab-item id="0" @click.native.prevent="reLoadList">全部订单</mt-tab-item>
 		  <mt-tab-item id="1" @click.native.prevent="reLoadList">已付款</mt-tab-item>
@@ -16,13 +16,18 @@
 		    <div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }" id="mybox">
 		        <ul class="page-loadmore-list">
 		          <li v-for="item in orderList" class="page-loadmore-listitem">
-		          	<div class="head">日期：<span>{{item.time}}</span><font>已付款</font></div>
+		          	<div class="head">订单号：<span class="t-pro">{{item.time}}</span><font>已付款</font></div>
 		          	<div class="cont">
-		          		<span>ID:</span>{{item.id}} <br />
-		          		<span>标题：</span>{{item.title}} <br />
-		          		<span>简介：</span>{{item.details}}
+		          		<span>客户姓名:</span>{{item.title}} <br />
+		          		<span>拍摄内容：</span>{{item.title}} <br />
+		          		<span>拍摄日期：</span><span class="t-pro">{{item.time}}</span><br />
+		          		<span>拍摄时间：</span><span class="t-pro">{{item.time}}</span> <br />
+		          		<span>门店电话：</span><a href="#" class="t-pro">{{item.time}}</a>
 		          	</div>
-		          	<div class="foot">价格：<font>￥319</font></div>
+		          	<div class="foot">
+		          		价格：<font class="t-red">￥319</font>
+		          		<button>去付款</button>
+		          	</div>
 		          </li>
 		        </ul>
 		        <div slot="bottom" class="mint-loadmore-bottom">
