@@ -70,7 +70,7 @@
 					var self = this;
 					axios.get('./data/orderList.json')
 						.then(function(response) {
-							console.log(87);
+							//console.log(87);
 							if(response.data.status == 0) {
 								if(self.isReload == true) {
 									document.getElementById("mybox").scrollTop = 0;

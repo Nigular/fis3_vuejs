@@ -8,41 +8,17 @@
     <div id="app">
 	    <div class="top_tip">可加选其他产品组成套餐(非必选)：</div>
 	    <div class="list">
-	    	<li class="active">
+	    	<li v-bind:class="{'active':item.checked}" v-for="(item,ind) in res.list" v-on:click="selectedPackage(ind)">
 	    		<div class="img">
-	    			<img class="avatar" src="images/tmp_man.jpg"/>
+	    			<img class="avatar" v-bind:src="item.cover_img"/>
 	    			<div class="cover"><img src="images/tick.png"/></div>
 	    		</div>
-	    		<div class="tit">证件照</div>
-	    		<div class="m-tit">document photo</div>
-	    		<div class="price"><font>￥</font>420.00</div>
-	    		<s class="d-price">￥450.00</s>
+	    		<div class="tit">{{item.title}}</div>
+	    		<div class="m-tit">{{item.title_en}}</div>
+	    		<div class="price"><font>￥</font>{{item.money}}</div>
+	    		<s class="d-price">{{item.money}}</s>
 	    		<div class="add"><img src="images/add.png"/></div>
-	    		<div class="reduce_money">立减30元</div>
-	    	</li>
-	    	<li>
-	    		<div class="img">
-	    			<img class="avatar" src="images/tmp_man.jpg"/>
-	    			<div class="cover"><img src="images/tick.png"/></div>
-	    		</div>
-	    		<div class="tit">证件照</div>
-	    		<div class="m-tit">document photo</div>
-	    		<div class="price"><font>￥</font>420.00</div>
-	    		<s class="d-price">￥450.00</s>
-	    		<div class="add active"><img src="images/add.png"/></div>
-	    		<div class="reduce_money">立减30元</div>
-	    	</li>
-	    	<li>
-	    		<div class="img">
-	    			<img class="avatar" src="images/tmp_man.jpg"/>
-	    			<div class="cover"><img src="images/tick.png"/></div>
-	    		</div>
-	    		<div class="tit">证件照</div>
-	    		<div class="m-tit">document photo</div>
-	    		<div class="price"><font>￥</font>420.00</div>
-	    		<s class="d-price">￥450.00</s>
-	    		<div class="add active"><img src="images/add.png"/></div>
-	    		<div class="reduce_money">立减30元</div>
+	    		<div class="reduce_money">立减{{item.reduce_money}}元</div>
 	    	</li>
 	    </div>
 	    <div class="ctrl">
@@ -55,19 +31,29 @@
     	var app = new Vue({
 		  el: '#app',
 		  data: {
+		  	res:[],
 		    package_ids:[]
 		  },
+		  created:function(){
+		  	var _this=this;
+		  	axios.get('./data/getpackage.json').then(function(res){
+		  		if(res.data.code==1){
+		  			_this.res=res.data;
+		  		}else{
+		  			console.log(res.data.msg); //错误提示
+		  		}
+		  	}).catch(function(error){
+		  		
+		  	})
+		  },
 		  methods:{
-		  	isSeleted(obj) {  
-		  		var arr=this.package_ids;
-			    var i = arr.length;  
-			    while (i--) {  
-			        if (arr[i] === obj) {  
-			            return true;  
-			        }  
-			    }  
-			    return false;  
+		  	selectedPackage(ind) {  
+		  		var mark = this.res.list[ind].checked;
+		  		this.res.list[ind].checked = !mark;
 			}  
+		  },
+		  mounted:function(){
+		  	
 		  }
 		});
     </script>

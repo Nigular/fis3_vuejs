@@ -1,0 +1,35 @@
+{
+  "code": 1,
+  "list": [
+    {
+      "id": "1",
+      "product_id": "3",
+      "title": "艺术照",
+      "title_en": "aaaa",
+      "money": "400.00",
+      "reduce_money": "30.00",
+      "cover_img": "/images/tmp_man.jpg",
+      "checked":false
+    },
+    {
+      "id": "2",
+      "product_id": "3",
+      "title": "文艺照",
+      "title_en": "aaaa",
+      "money": "300.00",
+      "reduce_money": "30.00",
+      "cover_img": "/images/tmp_man.jpg",
+      "checked":false
+    },
+    {
+      "id": "3",
+      "product_id": "3",
+      "title": "正装照",
+      "title_en": "aaaa",
+      "money": "500.00",
+      "reduce_money": "30.00",
+      "cover_img": "/images/tmp_man.jpg",
+      "checked":false
+    }
+  ]
+}
