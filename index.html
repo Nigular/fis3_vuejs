@@ -7,7 +7,7 @@
 	<body class="page_index">
     <div id="app">
 	    <mt-swipe :auto="0">
-	      <mt-swipe-item class="slide"><img src="../images/tmp_banner.jpg"/></mt-swipe-item>
+	      <mt-swipe-item class="slide"><img src="../images/tmp_banner.jpg" @click="goDetail"/></mt-swipe-item>
 	      <mt-swipe-item class="slide">2</mt-swipe-item>
 	      <mt-swipe-item class="slide">3</mt-swipe-item>
 	    </mt-swipe>
@@ -31,6 +31,11 @@
 		  el: '#app',
 		  data: {
 		    
+		  },
+		  methods:{
+		  	goDetail:function(){
+		  		window.location.href="./detail.html";
+		  	}
 		  }
 		});
     </script>

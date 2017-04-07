@@ -26,7 +26,7 @@
 		          	</div>
 		          	<div class="foot">
 		          		价格：<font class="t-red">￥319</font>
-		          		<button>去付款</button>
+		          		<button @click="gotoPay">去付款</button>
 		          	</div>
 		          </li>
 		        </ul>
@@ -93,6 +93,9 @@
 				},
 				addList() {
 					this.fetchData(this.navList[this.selected].url);
+				},
+				gotoPay(){
+					window.location.href="./orderdetail.html";
 				}
 			},
 			mounted() {

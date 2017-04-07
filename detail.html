@@ -29,7 +29,7 @@
 		  	</div>
 		</div>
 		<div class="ctrl">
-	  		<div class="pre">返回</div>
+	  		<div class="pre" @click="goBack">返回</div>
 	  		<div class="next"><font>共计：</font>￥{{total}}&nbsp;下一步</div>
 	  	</div>
 		<div class="pop" v-show="is_pop" v-cloak>
@@ -88,6 +88,9 @@
 		  			this.is_prop=0;
 		  			this.total=parseFloat(this.total)-parseFloat(this.prop_money);
 		  		}
+		  	},
+		  	goBack:function(){
+		  		window.history.go(-1);
 		  	}
 		  }
 		});

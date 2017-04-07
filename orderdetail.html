@@ -51,7 +51,7 @@
     		<b class="f_red">*</b><span>手机：</span><span>13631899887</span>
     	</div>
     	<div class="fix_bottom">
-    		<div class="btn">返回</div>
+    		<div class="btn" @click="goBack">返回</div>
     		<div class="f_r">已付定金：<span class="f_red f_30">￥50.00</span><div class="btn spe">申请退款</div></div>
     	</div>
 	</div>
@@ -61,6 +61,11 @@
 		  el: '#app',
 		  data: {
 		    
+		  },
+		  methods:{
+		  	goBack:function(){
+		  		window.history.go(-1);
+		  	}
 		  }
 		});
     </script>
