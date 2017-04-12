@@ -24,7 +24,7 @@ fis.match('*.less', {
 
 // 资源定位，指定静态文件输出目录
 fis.match('*.{png,js,css,less}', {
-	release: '/static/$0'
+	release: '/Public/home/$0'
 });
 
 //对 js、css、png 图片引用 URL 添加 md5 戳
