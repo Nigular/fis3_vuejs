@@ -39,22 +39,28 @@
 		  mounted(){
 		  	var _this=this;
 		  	/**获取banner**/
-		  	axios.get(API_getBanners).then(function(respond){
-		  		if(respond.data.code==1){
-		  			_this.banners=respond.data.list;
+			$.get(API_getBanners,function(respond){
+				if(respond.code==1){
+		  			_this.banners=respond.list;
+		  		}else{
+		  			_this.$toast({
+					  message: respond.msg,
+					  duration: 2000
+					});
 		  		}
-		  	}).catch(function(error) {
-				console.log(error);
-			});
+			})
 			
 			/**获取展示产品**/
-			axios.get(API_getProducts).then(function(respond){
-		  		if(respond.data.code==1){
-		  			_this.products=respond.data.list;
+			$.get(API_getProducts,function(respond){
+				if(respond.code==1){
+		  			_this.products=respond.list;
+		  		}else{
+		  			_this.$toast({
+					  message: respond.msg,
+					  duration: 2000
+					});
 		  		}
-		  	}).catch(function(error) {
-				console.log(error);
-			});
+			})
 		  }
 		});
     </script>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>时间段选择</title>
+		<link rel="import" href="./modules/_template_mate.html?__inline">
+	</head>
+	<body class="page_time">
+    <div id="app">
+	    <h1>选择时间段</h1>
+	    <div class="timelist">
+	    	<ul>
+	    		<li v-for="item in list" v-bind:data-id="item.id" v-bind:class="{unable:item.choose==0}">
+	    			{{item.time}}
+	    		</li>
+	    	</ul>
+	    </div>
+		<div class="ctrl">
+	  		<div class="pre" @click="goBack">返回</div>
+	  	</div>
+	</div>
+    <link rel="import" href="./modules/_template_script.html?__inline">
+    <script type="text/javascript">
+		var app = new Vue({
+			el: '#app',
+			data: {
+				list:[],
+				orderId:0,
+				bookDate:0,
+				bookTime:0
+			},
+			methods: {
+				goBack:function(){
+			  		window.history.go(-1);
+			  	}
+			},
+			mounted: function() {
+				this.orderId=GetQueryString("oid");
+				this.bookDate=GetQueryString("date");
+				var _this=this;
+				
+				/**获取时间段**/
+				$.post(API_getBookTime,{book_date:_this.bookDate},function(respond){
+					console.log(respond)
+					if(respond.code==1){
+						_this.list=respond.list;
+					}
+				});
+				
+				$(".timelist").on("click","li",function(){
+					$(this).addClass("active").siblings().removeClass("active");
+					_this.bookTime=$(this).data("id");
+					console.log(_this.bookTime);
+				})
+			}
+		});
+    </script>
+	</body>
+</html>

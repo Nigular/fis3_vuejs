@@ -7,30 +7,26 @@
 	<body class="page_detail">
     <div id="app" v-cloak>
 	    <mt-swipe :auto="0">
-	      <mt-swipe-item class="slide"><img src="../images/tmp_banner.jpg"/></mt-swipe-item>
-	      <mt-swipe-item class="slide">2</mt-swipe-item>
-	      <mt-swipe-item class="slide">3</mt-swipe-item>
+	      <mt-swipe-item class="slide" v-for="item in product.images"><img v-bind:src="item" onerror="this.src='images/loading.jpg'"/></mt-swipe-item>
 	    </mt-swipe>
 	    
 	    <div class="content">
-		  	<div class="title">COUPLE<span>art photo</span></div>
-		  	<div class="money"><span>{{order_money}}</span>/套</div>
-		  	<p class="info">
-			 含化妆、服装、精修；<br /> 精修后的数码底片1张(半身照)、单个背景；<br /> 一张6寸打印照。
-		  	</p>
+		  	<div class="title">{{product.title}}<span>{{product.title_en}}</span></div>
+		  	<div class="money"><span>{{product.money}}</span>/套</div>
+		  	<p class="info" v-html="product.content"></p>
 		  	<div class="m-tit">
 		  		升级体验<span>（非必选）</span>
 		  		<span class="what" v-on:click="{is_pop=true}"><b>?</b>什么是升级体验</span>
 		  	</div>
 		  	<div class="package">
-		  		<li v-bind:class="{active:is_four}" v-on:click="setFour">四宫格</li>
-		  		<li v-bind:class="{active:is_nine}" v-on:click="setNine">九宫格</li>
-		  		<li v-bind:class="{active:is_prop}" v-on:click="setProp">加道具</li>
+		  		<li v-bind:class="{active:choose_four}" v-on:click="setFour" v-if="product.is_four==1">四宫格</li>
+		  		<li v-bind:class="{active:choose_nine}" v-on:click="setNine" v-if="product.is_nine==1">九宫格</li>
+		  		<li v-bind:class="{active:choose_prop}" v-on:click="setProp" v-if="product.is_prop==1">加道具</li>
 		  	</div>
 		</div>
 		<div class="ctrl">
 	  		<div class="pre" @click="goBack">返回</div>
-	  		<div class="next"><font>共计：</font>￥{{total}}&nbsp;下一步</div>
+	  		<div class="next" @click="saveOrder"><font>共计：</font>￥{{total}}&nbsp;下一步</div>
 	  	</div>
 		<div class="pop" v-show="is_pop" v-cloak>
 			<div class="cont">
@@ -48,50 +44,85 @@
     	var app = new Vue({
 		  el: '#app',
 		  data: {
-		  	total:"358.00",	//总价
-		    is_four:0,
-		    is_nine:0,
-		    is_prop:0,
-		    order_money:"358.00",
-		    four_money:"19.99",
-		    nine_money:"29.98",
-		    prop_money:"38.88",
-		    is_pop:false
+		  	pid:0,
+		  	total:"0",	//总价
+		    choose_four:0,
+		    choose_nine:0,
+		    choose_prop:0,
+		    is_pop:false,
+		    product:[]
 		  },
 		  methods:{
 		  	setFour:function(){
-		  		this.is_four==0?this.is_four=1:this.is_four=0;
-		  		if(this.is_four){
-		  			this.is_four=1;
-		  			this.total=parseFloat(this.total)+parseFloat(this.four_money);
+		  		this.choose_four==0?this.choose_four=1:this.choose_four=0;
+		  		if(this.choose_four){
+		  			this.choose_four=1;
+		  			this.total=parseFloat(this.total)+parseFloat(this.product.four_money);
 		  		}else{
-		  			this.is_four=0;
-		  			this.total=parseFloat(this.total)-parseFloat(this.four_money);
+		  			this.choose_four=0;
+		  			this.total=parseFloat(this.total)-parseFloat(this.product.four_money);
 		  		}
 		  	},
 		  	setNine:function(){
-		  		this.is_nine==0?this.is_nine=1:this.is_nine=0;
-		  		if(this.is_nine){
-		  			this.is_nine=1;
-		  			this.total=parseFloat(this.total)+parseFloat(this.nine_money);
+		  		this.choose_nine==0?this.choose_nine=1:this.choose_nine=0;
+		  		if(this.choose_nine){
+		  			this.choose_nine=1;
+		  			this.total=parseFloat(this.total)+parseFloat(this.product.nine_money);
 		  		}else{
-		  			this.is_nine=0;
-		  			this.total=parseFloat(this.total)-parseFloat(this.nine_money);
+		  			this.choose_nine=0;
+		  			this.total=parseFloat(this.total)-parseFloat(this.product.nine_money);
 		  		}
 		  	},
 		  	setProp:function(){
-		  		this.is_prop==0?this.is_prop=1:this.is_prop=0;
-		  		if(this.is_prop){
-		  			this.is_prop=1;
-		  			this.total=parseFloat(this.total)+parseFloat(this.prop_money);
+		  		this.choose_prop==0?this.choose_prop=1:this.choose_prop=0;
+		  		if(this.choose_prop){
+		  			this.choose_prop=1;
+		  			this.total=parseFloat(this.total)+parseFloat(this.product.prop_money);
 		  		}else{
-		  			this.is_prop=0;
-		  			this.total=parseFloat(this.total)-parseFloat(this.prop_money);
+		  			this.choose_prop=0;
+		  			this.total=parseFloat(this.total)-parseFloat(this.product.prop_money);
 		  		}
 		  	},
 		  	goBack:function(){
 		  		window.history.go(-1);
+		  	},
+		  	saveOrder:function(){
+		  		var postData={
+		  			product_id:this.pid,
+		  			is_four:this.choose_four,
+		  			is_nine:this.choose_nine,
+		  			is_prop:this.choose_prop
+		  		}
+		  		var _this=this;
+				$.post(API_saveOrder,postData,function(respond){
+					if(respond.code==1){
+						location.href="package.html?pid="+_this.pid+"&oid="+respond.order_id;
+						//console.log(respond);
+					}else{
+						_this.$toast({
+						  message: respond.msg,
+						  duration: 2000
+						});
+					}
+				});
 		  	}
+		  },
+		  mounted(){
+		  	var pid=GetQueryString("id");
+		  	this.pid=pid;
+		  	var _this=this;
+		  	
+			$.get(API_getProductById+"/product_id/"+pid,function(respond){
+				if(respond.code==1){
+		  			_this.product=respond.product;
+		  			_this.total=respond.product.money;
+		  		}else{
+		  			_this.$toast({
+					  message: respond.msg,
+					  duration: 2000
+					});
+		  		}
+			})
 		  }
 		});
     </script>

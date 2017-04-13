@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>日期选择</title>
+		<link rel="import" href="./modules/_template_mate.html?__inline">
+	</head>
+	<body class="page_date">
+    <div id="app">
+	    <h1>选择日期</h1>
+	    <div class="selt-m">
+		    <span v-on:click="viewpre">上一月</span>
+		    <font class="month">{{year}}年{{month}}月</font>
+		    <span v-on:click="viewnext">下一月</span>
+	    </div>
+	    <div class="title">
+	    	<li>周一</li>
+	    	<li>周二</li>
+	    	<li>周三</li>
+	    	<li>周四</li>
+	    	<li>周五</li>
+	    	<li>周六</li>
+	    	<li>周日</li>
+	    </div>
+		<div id="content" class="content">
+			<div class="date1" v-for="item in days" v-bind:class="{today:item==day && istoday}" v-on:click="goday(item)">{{item}}</div>
+		</div>
+		
+		<div class="ctrl">
+	  		<div class="pre" @click="goBack">返回</div>
+	  	</div>
+	</div>
+    <link rel="import" href="./modules/_template_script.html?__inline">
+    <script type="text/javascript">
+		var app = new Vue({
+			el: '#app',
+			data: {
+				msg: 'Welcome to Your Vue.js App',
+				year: new Date().getFullYear(),
+				month: new Date().getMonth() + 1,
+				day: new Date().getDate(), //今天
+				istoday: true,
+				days: [],
+				orderId:0
+			},
+			methods: {
+				getTime: function(year, month, day) {
+					var myDate = new Date(year, month - 1, day);
+					return myDate;
+				},
+				days_in_month: function(year, month) {
+					var y = year;
+					var m = month;
+					return 32 - new Date(y, m - 1, 32).getDate();
+				},
+				view: function(year, month) {
+					var w = this.getTime(year, month, 1).getDay() - 1;
+					var num = this.days_in_month(year, month);
+					var index = 1;
+					var data = new Array();
+					for(var d = 0; d < num + w; d++) {
+						if(d < w) {
+							data[d] = '';
+						} else {
+							data[d] = index;
+							index++;
+						}
+					}
+					this.days = data;
+				},
+				checkday: function(year, month) {
+					if(year == new Date().getFullYear() && month == new Date().getMonth() + 1) {
+						return true;
+					} else {
+						return false;
+					}
+				},
+				viewnext: function() {
+					this.month++;
+					if(this.month == 13) {
+						this.month = 1;
+						this.year++;
+					}
+					this.istoday = this.checkday(this.year, this.month);
+					this.view(this.year, this.month);
+				},
+				viewpre: function() {
+					this.month--;
+					if(this.month == 0) {
+						this.month = 12;
+						this.year--;
+					}
+					this.istoday = this.checkday(this.year, this.month);
+					this.view(this.year, this.month);
+				},
+				goday: function(day) {
+					var y=this.year;
+					var m=this.month;
+					var d=day;
+					if(m<10){m="0"+m}
+					if(d<=10){d="0"+d}
+					var str = y+m+d;
+					console.log(str);
+					location.href="time.html?oid="+this.orderId+"&date="+str;
+				},
+				goBack:function(){
+			  		window.history.go(-1);
+			  	}
+			},
+			mounted: function() {
+				this.view(this.year, this.month);
+				this.orderId=GetQueryString("oid");
+			}
+		});
+    </script>
+	</body>
+</html>

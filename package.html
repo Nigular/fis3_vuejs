@@ -8,14 +8,14 @@
     <div id="app">
 	    <div class="top_tip">可加选其他产品组成套餐(非必选)：</div>
 	    <div class="list">
-	    	<li v-bind:class="{'active':item.checked}" v-for="(item,ind) in res.list" v-on:click="selectedPackage(ind)">
+	    	<li v-bind:class="{'active':$.inArray(item.id, package_ids)>=0}" v-for="item in list" v-on:click="selectedPackage(item.id)">
 	    		<div class="img">
-	    			<img class="avatar" v-bind:src="item.cover_img"/>
+	    			<img class="avatar" v-bind:src="item.cover_img" onerror="this.src='images/loading.jpg'"/>
 	    			<div class="cover"><img src="images/tick.png"/></div>
 	    		</div>
 	    		<div class="tit">{{item.title}}</div>
 	    		<div class="m-tit">{{item.title_en}}</div>
-	    		<div class="price"><font>￥</font>{{item.money}}</div>
+	    		<div class="price"><font>￥</font>{{item.money-item.reduce_money}}</div>
 	    		<s class="d-price">{{item.money}}</s>
 	    		<div class="add"><img src="images/add.png"/></div>
 	    		<div class="reduce_money">立减{{item.reduce_money}}元</div>
@@ -23,7 +23,7 @@
 	    </div>
 	    <div class="ctrl">
 	  		<div class="pre">返回</div>
-	  		<div class="next"><font>共计：</font>￥420&nbsp;下一步</div>
+	  		<div class="next" @click="savePackage"><font>共计：</font>￥{{total}}&nbsp;下一步</div>
 	  	</div>
 	</div>
     <link rel="import" href="./modules/_template_script.html?__inline">
@@ -31,29 +31,65 @@
     	var app = new Vue({
 		  el: '#app',
 		  data: {
-		  	res:[],
-		    package_ids:[]
+		  	list:[],
+		    package_ids:[],
+		    total:0,
+		    orderId:0
 		  },
 		  created:function(){
 		  	var _this=this;
-		  	axios.get('./data/getpackage.json').then(function(res){
-		  		if(res.data.code==1){
-		  			_this.res=res.data;
+		  	var oid=GetQueryString("oid");
+		  	var pid=GetQueryString("pid");
+		  	this.orderId=oid;
+		  	$.post(API_getPackages,{product_id:pid,order_id:oid},function(respond){
+		  		if(respond.code==1){
+		  			_this.list=respond.list;
+		  			_this.package_ids=respond.package_ids;
+		  			_this.sumMoney();
 		  		}else{
-		  			console.log(res.data.msg); //错误提示
+		  			_this.$toast({
+					  message: respond.msg,
+					  duration: 2000
+					});
 		  		}
-		  	}).catch(function(error){
-		  		
 		  	})
 		  },
 		  methods:{
-		  	selectedPackage(ind) {  
-		  		var mark = this.res.list[ind].checked;
-		  		this.res.list[ind].checked = !mark;
-			}  
+		  	selectedPackage(id) { 
+		  		var selectId = id;
+		  		if($.inArray(selectId, this.package_ids)<0){
+		  			this.package_ids.push(selectId);
+		  		}else{
+		  			this.package_ids.splice($.inArray(selectId, this.package_ids),1);
+		  		}
+		  		this.sumMoney();
+			},
+			sumMoney(){
+				var _this=this;
+				_this.total=0;
+				for(var item in _this.list){
+					if($.inArray(_this.list[item].id, _this.package_ids)>=0){
+						_this.total=parseFloat(_this.total)+parseFloat(_this.list[item].money)-parseFloat(_this.list[item].reduce_money);
+					}
+				}
+			},
+			savePackage(){
+				var _this=this;
+				//保存套餐
+				$.post(API_savePackage,{order_id:_this.orderId,package_ids:_this.package_ids},function(respond){
+					if(respond.code==1){
+						location.href="date.html?oid="+_this.orderId;
+					}else{
+						_this.$toast({
+						  message: respond.msg,
+						  duration: 2000
+						});
+					}
+				});
+			}
 		  },
 		  mounted:function(){
-		  	
+		  	this.orderId=GetQueryString("oid");
 		  }
 		});
     </script>
