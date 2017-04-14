@@ -3,74 +3,171 @@
 	<head>
 		<title>订单详情</title>
 		<link rel="import" href="./modules/_template_mate.html?__inline">
+			<link rel="stylesheet" type="text/css" href="css/unit/zepto.mdatetimer.css"/>
 	</head>
 	<body class="page_orderdetail">
+		
     <div id="app" v-cloak>
-    	<div class="top_tip">支付剩余时间：15 分 30 秒</div>
+    	<div class="top_tip" v-if="expireTime>0">支付剩余时间：{{expireTime | toTime}}</div>
+    	<div class="top_tip" v-if="expireTime<=0">付款超时 订单失效</div>
     	<div class="cell">
     		<span>拍摄地址：</span><span>广州市天河店</span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span>拍摄时间：</span><span>2017-12-5 14:00</span>
+    		<span>拍摄时间：</span><span>{{orderPath.book_date}} {{orderPath.book_time}}</span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
     		<span>拍摄内容：</span>
     	</div>
     	<div class="cell">
-    		<span class="f_main">证件照（蓝色）</span><span class="f_r f_red">￥125.00</span>
+    		<span class="f_main">{{orderPath.product_info.title}}</span><span class="f_r f_red">￥{{orderPath.product_info.money}}</span>
     	</div>
-    	<div class="cell">
-    		<span class="f_main">白描</span><span class="f_r f_red">￥249.00</span>
+    	<div class="cell" v-if="orderPath.is_four==1">
+    		<span class="f_main">四宫格</span><span class="f_r f_red">￥{{orderPath.four_money}}</span>
+    	</div>
+    	<div class="cell" v-if="orderPath.is_nine==1">
+    		<span class="f_main">九宫格</span><span class="f_r f_red">￥{{orderPath.nine_money}}</span>
+    	</div>
+    	<div class="cell" v-if="orderPath.is_prop==1">
+    		<span class="f_main">加道具</span><span class="f_r f_red">￥{{orderPath.prop_money}}</span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span>订单金额</span><span class="f_r f_red">￥249.00</span>
+    		<span>附加套餐：</span>
     	</div>
-    	<div class="cell">
-    		<s class="f_r">￥249.00</s>
+    	<div class="cell" v-for="item in packageList">
+    		<span class="f_main">{{item.package_info.title}}</span><span class="f_r f_red">￥{{item.package_info.money}}</span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span class="f_main">预付定金</span><span class="f_r f_red">￥50.00</span>
+    		<span>订单金额</span><span class="f_r f_red">￥{{orderPath.order_money}}</span>
+    	</div>
+    	<div class="cell">
+    		<s class="f_r">￥{{orderPath.all_money}}</s>
+    	</div>
+    	<div class="line"></div>
+    	<div class="cell">
+    		<span class="f_main">预付定金</span><span class="f_r f_red">￥{{orderPath.book_money}}</span>
     	</div>
     	<div class="cell" style="margin-top:0.2rem;">
-    		<b class="f_red">*</b><span>姓名：</span><span>赵石</span>
+    		<b class="f_red">*</b><span>姓名：</span><span><input type="text" v-bind:value="orderPath.user_name" id="name" placeholder="请输入姓名"/></span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span>生日：</span><span>1991-1-11</span>
+    		<span>生日：</span><input type="text" id="picktime" value="" placeholder="选填" readonly="readonly">
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span>性别：</span><span>男</span>
+    		<span>性别：</span>
+    		<label><input name="sex" type="radio" value="1" />男 </label> 
+			<label><input name="sex" type="radio" value="2" />女 </label> 
     	</div>
     	<div class="line"></div>
-    	<div class="cell">
-    		<b class="f_red">*</b><span>手机：</span><span>13631899887</span>
+    	<div class="cell" style="margin-bottom: 2rem;">
+    		<b class="f_red">*</b><span>手机：</span><span><input type="text" id="telephone" v-bind:value="orderPath.user_telephone" placeholder="请输入手机号码"/></span>
     	</div>
+    	
     	<div class="fix_bottom">
     		<div class="btn" @click="goBack">返回</div>
-    		<div class="f_r">已付定金：<span class="f_red f_30">￥50.00</span><div class="btn spe">申请退款</div></div>
+    		<div class="f_r">定金总计：<span class="f_red f_30">￥50.00</span><div class="btn spe" @click="toPay">去付款</div></div>
     	</div>
 	</div>
+	
     <link rel="import" href="./modules/_template_script.html?__inline">
+    <script src="lib/zepto.mdatetimer.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript">
     	var app = new Vue({
-		  el: '#app',
-		  data: {
-		    
-		  },
-		  methods:{
-		  	goBack:function(){
-		  		window.history.go(-1);
+		  	el: '#app',
+			data: {
+				orderId: 0,
+				orderPath: [],
+				packageList: [],
+				expireTime:1200
+			},
+			methods: {
+				goBack: function() {
+					window.history.go(-1);
+				},
+				cutDownTime:function(){
+					var _this=this;
+		    		setInterval(function(){
+		    			_this.expireTime--;
+		    		},1000)
+		    	},
+				toPay:function(){
+					var _this=this;
+					/**保存用户信息**/
+					var saveData={
+						order_id:_this.orderId,
+						name:$("#name").val(),
+						sex:$("input[name='sex']:checked").val(),
+						birthday:$("#picktime").val(),
+						telephone:$("#telephone").val()
+					}
+					$.post(API_saveUserInfo,saveData,function(respond){
+						if(respond.code==1){
+				  			console.log(respond);
+				  			_this.$toast({
+							  message: respond.msg,
+							  duration: 2000
+							});
+				  		}else{
+				  			_this.$toast({
+							  message: respond.msg,
+							  duration: 2000
+							});
+				  		}
+					})
+				}
+			},
+			filters:{
+		    	toTime:function(time){
+		    		var h=parseInt(time/3600);
+		    		if(h<10){h="0"+h}
+					var m=parseInt((time-h*3600)/60);
+					if(m<10){m="0"+m}
+					var s=parseInt(time-h*3600)%60;
+					if(s<10){s="0"+s}
+					return h+":"+m+":"+s;
+		    	}
+		    },
+			mounted: function() {
+				this.orderId = GetQueryString("oid");
+			  	var _this=this;
+			  	$.post(API_getOrderById,{order_id:_this.orderId},function(respond){
+			  		console.log(respond);
+			  		if(respond.code==1){
+			  			_this.orderPath=respond.order;
+			  			_this.packageList=respond.package_list;
+			  			_this.expireTime=respond.order.expire_time;
+			  			_this.cutDownTime();//开始倒计时
+			  		}else{
+			  			_this.$toast({
+						  message: respond.msg,
+						  duration: 2000
+						});
+			  		}
+			  	});
+			  	
+			  	setTimeout(function(){
+			  		var setYears=[];
+			  		for(i=1930;i<=2017;i++){
+			  			setYears.push(i);
+			  		}
+			  		$('#picktime').mdatetimer({
+						mode : 1, //时间选择器模式：1：年月日，2：年月日时分（24小时），3：年月日时分（12小时），4：年月日时分秒。默认：1
+						format : 2, //时间格式化方式：1：2015年06月10日 17时30分46秒，2：2015-05-10  17:30:46。默认：2
+						years : setYears, //年份数组
+						nowbtn : true, //是否显示现在按钮
+						onOk : function(){},
+						onCancel : function(){}
+					});	
+			  	},1000);
 		  	}
-		  },
-		  mounted(){
-		  	
-		  }
 		});
+		
     </script>
 	</body>
 </html>

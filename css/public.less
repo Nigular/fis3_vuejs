@@ -457,6 +457,9 @@ body{max-width: 750px;margin: 0 auto;}
 /** 订单详情 **/
 .page_orderdetail{
     background-color: @c_bg;
+    #app{
+        font-size: 0.4rem;
+    }
     .f_r{
         float: right;
     }
@@ -517,14 +520,33 @@ body{max-width: 750px;margin: 0 auto;}
     .content{
         overflow: hidden;
         .date1{
+            color: #333333;
             width:1rem;height: 1rem;line-height: 1rem;margin: 0.2rem;
             float: left;text-align: center;font-size: 0.4rem;
             border-radius: 0.5rem;overflow: hidden;
             &.today{
                 box-shadow: 1px 1px 3px;
             }
-            &:focus{
-                background: rgba(0,0,0,0.2);
+            &.active{
+                background: #ff8e86;color: #FFFFFF;
+            }
+        }
+    }
+    
+    .timelist{
+        margin-top: 1rem;margin-bottom: 1rem;overflow: hidden;
+        li{
+            float: left;
+            width: 25%;
+            text-align: center;
+            height: 120/75rem;
+            line-height: 120/75rem;
+            font-size: @f_30;
+            &.active{
+                background: #ff8e86;color: #FFFFFF;
+            }
+            &.unable{
+                color: #B9B9B9;pointer-events: none;
             }
         }
     }
@@ -559,52 +581,3 @@ body{max-width: 750px;margin: 0 auto;}
     }
 }
 
-/** 选择时间段 **/
-.page_time{
-    h1{text-align: center;font-size: 0.5rem;font-weight: bold;}
-    .timelist{
-        margin-top: 1rem;margin-bottom: 1rem;overflow: hidden;
-        li{
-            float: left;
-            width: 25%;
-            text-align: center;
-            height: 120/75rem;
-            line-height: 120/75rem;
-            font-size: @f_30;
-            &.active{
-                background: #C0A16B;color: #FFFFFF;
-            }
-            &.unable{
-                color: #B9B9B9;pointer-events: none;
-            }
-        }
-    }
-    .ctrl{
-        clear: both;
-        font-size: @f_30;
-        margin-top: 0.8rem;
-        .pre{
-            color: @c_green;
-            background-color: #FFFFFF;
-            float: left;
-            height: 90/75rem;line-height: 90/75rem;
-            width: 190/75rem;text-align: center;
-            box-shadow: 1px 1px 10px #A9ACB1;
-            border-top-right-radius:3px;
-            border-bottom-right-radius:3px;
-        }
-        .next{
-            color: #FFFFFF;
-            background-color: @c_green;
-            float: right;
-            height: 90/75rem;line-height: 90/75rem;
-            width: 330/75rem;text-align: center;
-            box-shadow: 1px 1px 10px #A9ACB1;
-            border-top-left-radius:3px;
-            border-bottom-left-radius:3px;
-            font{
-                font-size: 20/75rem;
-            }
-        }
-    }
-}

@@ -22,7 +22,7 @@
 	    	</li>
 	    </div>
 	    <div class="ctrl">
-	  		<div class="pre">返回</div>
+	  		<div class="pre" @click="goBack">返回</div>
 	  		<div class="next" @click="savePackage"><font>共计：</font>￥{{total}}&nbsp;下一步</div>
 	  	</div>
 	</div>
@@ -55,6 +55,9 @@
 		  	})
 		  },
 		  methods:{
+		  	goBack:function(){
+		  		window.history.go(-1);
+		  	},
 		  	selectedPackage(id) { 
 		  		var selectId = id;
 		  		if($.inArray(selectId, this.package_ids)<0){
