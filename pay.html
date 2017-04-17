@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>支付</title>
+		<link rel="import" href="./modules/_template_mate.html?__inline">
+		<script src="/Public/home/lib/jssdk.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body class="page_pay">
+   
+    <link rel="import" href="./modules/_template_script.html?__inline">
+    <script type="text/javascript">
+    	//支付方法
+		var _p = "{$p}";
+		var _postUrl="";
+		var _goUrl="orderlist.html";
+		
+		function jsApiCall() {
+			$.post(_postUrl, {
+                p : _p
+          	}, function (data) {
+                if(data.code == 1){
+                    WeixinJSBridge.invoke(
+			                'getBrandWCPayRequest',
+			                data.data,
+			                function (res) {
+			                    //如果支付成功
+			                    if (res.err_msg == 'get_brand_wcpay_request:ok') {
+			                        //支付成功后跳转的地址
+			                        location.href = _goUrl;
+			                    } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
+			                        alert('请尽快完成支付哦！');
+			                        jsBackCall();
+			                    } else if (res.err_msg == 'get_brand_wcpay_request:fail') {
+			                        alert('支付失败');
+								 	window.history.go(-1);
+			                    } else {
+			                        alert('意外错误');
+								 	window.history.go(-1);//
+			                    }
+			                }
+			        );
+                } else {
+                    alert(data.msg);
+                }
+            }, 'json');
+	    }
+
+	    function jsBackCall() {
+			$.post("{:U('Home/Ajax/rollbackOrders','','')}", {
+                p : _p
+            }, function (data) {
+                if(data.code == 1){
+					window.history.go(-1);
+                } else {
+                    $.mytoast(data.msg);
+                }
+            }, 'json');
+	    }
+
+	    function callpay() {
+	        if (typeof WeixinJSBridge == "undefined") {
+	            if (document.addEventListener) {
+	                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+	            } else if (document.attachEvent) {
+	                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+	                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+	            }
+	        } else {
+	            jsApiCall();
+	        }
+	    }
+	    var call=function(){
+	    	_postUrl = "{:U('Home/Wxpay/payCall','','')}";
+		    callpay();
+	    }
+	    $(function(){
+	    	call();
+	    });
+    </script>
+	</body>
+</html>

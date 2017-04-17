@@ -10,14 +10,16 @@
 	    <div class="list">
 	    	<li v-bind:class="{'active':$.inArray(item.id, package_ids)>=0}" v-for="item in list" v-on:click="selectedPackage(item.id)">
 	    		<div class="img">
-	    			<img class="avatar" v-bind:src="item.cover_img" onerror="this.src='images/loading.jpg'"/>
-	    			<div class="cover"><img src="images/tick.png"/></div>
+	    			<img class="avatar" v-bind:src="item.cover_img" alt="图片丢失"/>
+	    			<!--<div class="cover"><img src="images/tick.png"/></div>-->
+	    			<div class="cover"><img src="/Public/home/images/tick.png"/></div>
 	    		</div>
 	    		<div class="tit">{{item.title}}</div>
 	    		<div class="m-tit">{{item.title_en}}</div>
 	    		<div class="price"><font>￥</font>{{item.money-item.reduce_money}}</div>
 	    		<s class="d-price">{{item.money}}</s>
-	    		<div class="add"><img src="images/add.png"/></div>
+	    		<!--<div class="add"><img src="images/add.png"/></div>-->
+	    		<div class="add"><img src="/Public/home/images/add.png"/></div>
 	    		<div class="reduce_money">立减{{item.reduce_money}}元</div>
 	    	</li>
 	    </div>

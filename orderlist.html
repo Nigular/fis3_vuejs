@@ -16,25 +16,30 @@
 		    <div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }" id="mybox">
 		        <ul class="page-loadmore-list">
 		          <li v-for="item in orderList" class="page-loadmore-listitem">
-		          	<div class="head">订单号：<span class="t-pro">{{item.time}}</span><font>已付款</font></div>
+		          	<div class="head">订单号：<span class="t-pro">{{item.order_no}}</span>
+		          		<font v-if="item.status==1">已付款</font>
+		          		<font v-if="item.status==0">未付款</font>
+		          		<font v-if="item.status==2">已退款</font>
+		          	</div>
 		          	<div class="cont">
-		          		<span>客户姓名:</span>{{item.title}} <br />
-		          		<span>拍摄内容：</span>{{item.title}} <br />
-		          		<span>拍摄日期：</span><span class="t-pro">{{item.time}}</span><br />
-		          		<span>拍摄时间：</span><span class="t-pro">{{item.time}}</span> <br />
-		          		<span>门店电话：</span><a href="#" class="t-pro">{{item.time}}</a>
+		          		<span>客户姓名:</span>{{item.user_name}} <br />
+		          		<span>拍摄内容：</span>{{item.product_name}} <br />
+		          		<span>拍摄日期：</span><span class="t-pro">{{item.book_date}}</span><br />
+		          		<span>拍摄时间：</span><span class="t-pro">{{item.book_time}}</span> <br />
+		          		<span>门店电话：</span><a href="#" class="t-pro">{{item.user_telephone}}</a>
 		          	</div>
 		          	<div class="foot">
-		          		价格：<font class="t-red">￥319</font>
-		          		<button @click="gotoPay">去付款</button>
+		          		价格：<font class="t-red">￥{{item.order_money}}</font>
+		          		<button @click="gotoPay(item.id)">去付款</button>
 		          	</div>
 		          </li>
 		        </ul>
 		        <div slot="bottom" class="mint-loadmore-bottom">
-		          <span v-show="bottomStatus !== 'loading'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
-		          <span v-show="bottomStatus === 'loading'">
+		          <span v-show="bottomStatus !== 'end'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
+		          <!--<span v-show="bottomStatus === 'loading'">
 		            <mt-spinner type="snake"></mt-spinner>
-		          </span>
+		          </span>-->
+		          <span v-show="bottomStatus == 'end'">没有更多了</span>
 		        </div>
 		    </div>
 		</div>
@@ -48,10 +53,10 @@
 				nums: [1, 2, 3, 4, 5, 6],
 				active: 'tab-container1',
 				selected: '0',
-				navList: [{ "type": "type_0", "url": "./data/orderList.json" },
-					{ "type": "type_1", "url": "./data/orderList.json" },
-					{ "type": "type_2", "url": "./data/orderList.json" },
-					{ "type": "type_3", "url": "./data/orderList.json" }
+				navList: [{ "type": "type_99", "url": API_getOrders+"?status=all" },
+					{ "type": "type_1", "url": API_getOrders+"?status=1"},
+					{ "type": "type_0", "url": API_getOrders+"?status=0" },
+					{ "type": "type_2", "url": API_getOrders+"?status=2" }
 				],
 				list: [],
 				orderList: [],
@@ -60,7 +65,8 @@
 				wrapperHeight: 0,
 				fetchError: null,
 				isReload: true,
-				page: 0,
+				page: 1,
+				totalPage:1,
 				scrolled: false,
 				isLoading: true
 			},
@@ -68,34 +74,37 @@
 			methods: {
 				fetchData(url) {
 					var self = this;
-					axios.get('./data/orderList.json')
-						.then(function(response) {
-							//console.log(87);
-							if(response.data.status == 0) {
-								if(self.isReload == true) {
-									document.getElementById("mybox").scrollTop = 0;
-									self.orderList = []; //清空列表
-									self.orderList = self.orderList.concat(response.data.result.list);
-									self.isReload = false;
-								} else {
-									self.orderList = self.orderList.concat(response.data.result.list);
-								}
-								self.bottomStatus = "";
-								self.isLoading = true;
+					$.get(url,function(respond){
+						if(respond.code == 1) {
+							if(self.isReload == true) {
+								document.getElementById("mybox").scrollTop = 0;
+								self.orderList = []; //清空列表
+								self.orderList = self.orderList.concat(respond.list);
+								self.isReload = false;
+							} else {
+								self.orderList = self.orderList.concat(respond.list);
 							}
-						}).catch(function(error) {
-							console.log(error);
-						})
+							if(self.page>=respond.total_page){
+								self.isLoading = false;
+								self.bottomStatus = "end";
+								console.log(self.bottomStatus)
+							}else{
+								self.isLoading = true;
+								self.bottomStatus = "";
+							}
+						}
+					});
 				},
-				reLoadList() {
+				reLoadList(status) {
 					this.isReload = true;
-					this.fetchData(this.navList[this.selected].url);
+					this.page=1;
+					this.fetchData(this.navList[this.selected].url+"&page=1");
 				},
 				addList() {
 					this.fetchData(this.navList[this.selected].url);
 				},
-				gotoPay(){
-					window.location.href="./orderdetail.html";
+				gotoPay(oid){
+					window.location.href="./orderdetail.html?oid="+oid;
 				}
 			},
 			mounted() {
@@ -107,7 +116,8 @@
 						_this.isLoading = false;
 						_this.bottomStatus = "drop";
 						setTimeout(function() {
-							_this.fetchData(_this.navList[_this.selected].url);
+							_this.page++;
+							_this.fetchData(_this.navList[_this.selected].url+"&page="+_this.page);
 						}, 500);
 					}
 				}

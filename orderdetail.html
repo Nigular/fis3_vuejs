@@ -3,12 +3,13 @@
 	<head>
 		<title>订单详情</title>
 		<link rel="import" href="./modules/_template_mate.html?__inline">
-			<link rel="stylesheet" type="text/css" href="css/unit/zepto.mdatetimer.css"/>
+		<!--<link rel="stylesheet" type="text/css" href="css/unit/zepto.mdatetimer.css"/>-->
+		<link rel="stylesheet" type="text/css" href="/Public/home/css/unit/zepto.mdatetimer.css"/>
 	</head>
 	<body class="page_orderdetail">
 		
     <div id="app" v-cloak>
-    	<div class="top_tip" v-if="expireTime>0">支付剩余时间：{{expireTime | toTime}}</div>
+    	<div class="top_tip" v-if="expireTime>0">支付剩余时间：<span id="cutdowntime" v-bind:data-t="expireTime">waiting...</span></div>
     	<div class="top_tip" v-if="expireTime<=0">付款超时 订单失效</div>
     	<div class="cell">
     		<span>拍摄地址：</span><span>广州市天河店</span>
@@ -52,31 +53,35 @@
     		<span class="f_main">预付定金</span><span class="f_r f_red">￥{{orderPath.book_money}}</span>
     	</div>
     	<div class="cell" style="margin-top:0.2rem;">
-    		<b class="f_red">*</b><span>姓名：</span><span><input type="text" v-bind:value="orderPath.user_name" id="name" placeholder="请输入姓名"/></span>
+    		<span class="c-left"><b class="f_red">*</b>姓名：</span><span><input type="text" v-bind:value="orderPath.user_name" id="name" placeholder="请输入姓名"/></span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span>生日：</span><input type="text" id="picktime" value="" placeholder="选填" readonly="readonly">
+    		<span class="c-left">生日：</span><input type="text" id="picktime" value="" placeholder="选填" readonly="readonly">
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span>性别：</span>
+    		<span class="c-left">性别：</span>
     		<label><input name="sex" type="radio" value="1" />男 </label> 
 			<label><input name="sex" type="radio" value="2" />女 </label> 
     	</div>
     	<div class="line"></div>
-    	<div class="cell" style="margin-bottom: 2rem;">
-    		<b class="f_red">*</b><span>手机：</span><span><input type="text" id="telephone" v-bind:value="orderPath.user_telephone" placeholder="请输入手机号码"/></span>
+    	<div class="cell">
+    		<span class="c-left"><b class="f_red">*</b>手机：</span><span><input type="text" id="telephone" v-bind:value="orderPath.user_telephone" placeholder="请输入手机号码"/></span>
     	</div>
-    	
+    	<div class="line"></div>
+    	<div class="cell" style="margin-bottom: 2rem;">
+    		<span class="c-left">邮箱：</span><input type="text" id="email" v-bind:value="orderPath.user_email" placeholder="选填" readonly="readonly">
+    	</div>
     	<div class="fix_bottom">
     		<div class="btn" @click="goBack">返回</div>
-    		<div class="f_r">定金总计：<span class="f_red f_30">￥50.00</span><div class="btn spe" @click="toPay">去付款</div></div>
+    		<div class="f_r">定金总计：<span class="f_red f_30">￥{{orderPath.book_money}}</span><div class="btn spe" @click="toPay">去付款</div></div>
     	</div>
 	</div>
 	
     <link rel="import" href="./modules/_template_script.html?__inline">
-    <script src="lib/zepto.mdatetimer.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="lib/zepto.mdatetimer.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="/Public/home/lib/zepto.mdatetimer.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript">
     	var app = new Vue({
 		  	el: '#app',
@@ -84,7 +89,8 @@
 				orderId: 0,
 				orderPath: [],
 				packageList: [],
-				expireTime:1200
+				expireTime:0,
+				_p:0			//支付参数
 			},
 			methods: {
 				goBack: function() {
@@ -93,26 +99,30 @@
 				cutDownTime:function(){
 					var _this=this;
 		    		setInterval(function(){
-		    			_this.expireTime--;
+		    			var n=parseInt($("#cutdowntime").data("t"));
+		    			n--;
+		    			$("#cutdowntime").data("t",n);
+		    			var showtime=_this.toTime(n);
+		    			$("#cutdowntime").text(showtime);
 		    		},1000)
 		    	},
 				toPay:function(){
 					var _this=this;
+					_this.$indicator.open();
 					/**保存用户信息**/
 					var saveData={
 						order_id:_this.orderId,
 						name:$("#name").val(),
 						sex:$("input[name='sex']:checked").val(),
 						birthday:$("#picktime").val(),
-						telephone:$("#telephone").val()
+						telephone:$("#telephone").val(),
+						email:$("#email").val()
 					}
 					$.post(API_saveUserInfo,saveData,function(respond){
+						_this.$indicator.close();
 						if(respond.code==1){
-				  			console.log(respond);
-				  			_this.$toast({
-							  message: respond.msg,
-							  duration: 2000
-							});
+							var goUrl="{:U('Home/Index/pay','','')}/p/"+_this._p;
+							location.href=goUrl;
 				  		}else{
 				  			_this.$toast({
 							  message: respond.msg,
@@ -120,10 +130,8 @@
 							});
 				  		}
 					})
-				}
-			},
-			filters:{
-		    	toTime:function(time){
+				},
+				toTime:function(time){
 		    		var h=parseInt(time/3600);
 		    		if(h<10){h="0"+h}
 					var m=parseInt((time-h*3600)/60);
@@ -132,6 +140,8 @@
 					if(s<10){s="0"+s}
 					return h+":"+m+":"+s;
 		    	}
+			},
+			filters:{
 		    },
 			mounted: function() {
 				this.orderId = GetQueryString("oid");
@@ -142,6 +152,7 @@
 			  			_this.orderPath=respond.order;
 			  			_this.packageList=respond.package_list;
 			  			_this.expireTime=respond.order.expire_time;
+			  			_this._p=respond.order.p;
 			  			_this.cutDownTime();//开始倒计时
 			  		}else{
 			  			_this.$toast({
