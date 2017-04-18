@@ -36,7 +36,7 @@
 		  		window.location.href="./detail.html/pid/"+id;
 		  	}
 		  },
-		  mounted(){
+		  mounted:function(){
 		  	var _this=this;
 		  	/**获取banner**/
 			$.get(API_getBanners,function(respond){

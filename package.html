@@ -60,7 +60,7 @@
 		  	goBack:function(){
 		  		window.history.go(-1);
 		  	},
-		  	selectedPackage(id) { 
+		  	selectedPackage:function(id) { 
 		  		var selectId = id;
 		  		if($.inArray(selectId, this.package_ids)<0){
 		  			this.package_ids.push(selectId);
@@ -69,7 +69,7 @@
 		  		}
 		  		this.sumMoney();
 			},
-			sumMoney(){
+			sumMoney:function(){
 				var _this=this;
 				_this.total=0;
 				for(var item in _this.list){
@@ -78,7 +78,7 @@
 					}
 				}
 			},
-			savePackage(){
+			savePackage:function(){
 				var _this=this;
 				//保存套餐
 				$.post(API_savePackage,{order_id:_this.orderId,package_ids:_this.package_ids},function(respond){

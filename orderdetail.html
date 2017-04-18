@@ -70,13 +70,39 @@
     		<span class="c-left"><b class="f_red">*</b>手机：</span><span><input type="text" id="telephone" v-bind:value="orderPath.user_telephone" placeholder="请输入手机号码"/></span>
     	</div>
     	<div class="line"></div>
-    	<div class="cell" style="margin-bottom: 2rem;">
-    		<span class="c-left">邮箱：</span><input type="text" id="email" v-bind:value="orderPath.user_email" placeholder="选填" readonly="readonly">
+    	<div class="cell">
+    		<span class="c-left">邮箱：</span><input type="text" id="email" v-bind:value="orderPath.user_email" placeholder="选填"/>
     	</div>
+    	<div class="imgcell" style="margin-top:0.2rem;" v-show="orderPath.thumb_photos!=null">
+    		<span>图片下载：</span>
+    		<ul class="imgs">
+    			<li v-for="(item,index) in orderPath.thumb_photos" @click="popImg(index)"><img v-bind:src="item"/></li>
+    		</ul>
+    	</div>
+    	<div class="what" v-on:click="{is_pop=true}" style="margin-bottom: 2rem;"><b>?</b><span>退款规则</span></div>
     	<div class="fix_bottom">
     		<div class="btn" @click="goBack">返回</div>
     		<div class="f_r">定金总计：<span class="f_red f_30">￥{{orderPath.book_money}}</span><div class="btn spe" @click="toPay">去付款</div></div>
     	</div>
+    	
+    	<div class="pop" v-show="is_pop" v-cloak>
+			<div class="cont">
+				<div class="close" v-on:click="{is_pop=false}"><img src="images/close.png"/></div>
+				<div class="tit f-40">退款规则</div>
+				<p>距拍摄时间<span class="f-40 c-green">72</span>小时以上取消订单，<br /> 退<span class="f-40 c-red">99%</span>订金。</p>
+				<p>距拍摄时间<span class="f-40 c-green">48</span>至<span class="f-40 c-green">72</span>小时取消订单，<br /> 退<span class="f-40 c-red">50%</span>订金。</p>
+				<p>距拍摄时间不足<span class="f-40 c-green">48</span>小时取消订单，<br /> <span class="c-red">不退订金。</span></p>
+				<p>如未按照预定时间到店，<br /> 订单则视为放弃，<span class="c-red">订金不可退还。</span></p>
+			</div>
+		</div>
+		
+		<div class="img_pop" v-bind:class="{show:show_img}">
+			<div class="cont">
+				<div class="close" v-on:click="{show_img=false}"><img src="images/close.png"/></div>
+				<div class="tit">长按保存图片到手机</div>
+				<img v-bind:src="bigImg" alt="大图" class="big_img"/>
+			</div>
+		</div>
 	</div>
 	
     <link rel="import" href="./modules/_template_script.html?__inline">
@@ -86,6 +112,9 @@
     	var app = new Vue({
 		  	el: '#app',
 			data: {
+				is_pop:false,
+				show_img:false,
+				bigImg:'images/loading.jpg',
 				orderId: 0,
 				orderPath: [],
 				packageList: [],
@@ -139,6 +168,10 @@
 					var s=parseInt(time-h*3600)%60;
 					if(s<10){s="0"+s}
 					return h+":"+m+":"+s;
+		    	},
+		    	popImg:function(index){
+		    		this.show_img=true;
+		    		this.bigImg=this.orderPath.photos[index];
 		    	}
 			},
 			filters:{
@@ -147,7 +180,7 @@
 				this.orderId = GetQueryString("oid");
 			  	var _this=this;
 			  	$.post(API_getOrderById,{order_id:_this.orderId},function(respond){
-			  		console.log(respond);
+			  		//console.log(respond);
 			  		if(respond.code==1){
 			  			_this.orderPath=respond.order;
 			  			_this.packageList=respond.package_list;
@@ -164,7 +197,7 @@
 			  	
 			  	setTimeout(function(){
 			  		var setYears=[];
-			  		for(i=1930;i<=2017;i++){
+			  		for(i=1950;i<=2017;i++){
 			  			setYears.push(i);
 			  		}
 			  		$('#picktime').mdatetimer({

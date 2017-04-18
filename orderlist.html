@@ -15,7 +15,7 @@
     	<div class="page-loadmore">
 		    <div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }" id="mybox">
 		        <ul class="page-loadmore-list">
-		          <li v-for="item in orderList" class="page-loadmore-listitem">
+		          <li v-for="(item,index) in orderList" class="page-loadmore-listitem">
 		          	<div class="head">订单号：<span class="t-pro">{{item.order_no}}</span>
 		          		<font v-if="item.status==1">已付款</font>
 		          		<font v-if="item.status==0">未付款</font>
@@ -25,8 +25,14 @@
 		          		<span>客户姓名:</span>{{item.user_name}} <br />
 		          		<span>拍摄内容：</span>{{item.product_name}} <br />
 		          		<span>拍摄日期：</span><span class="t-pro">{{item.book_date}}</span><br />
-		          		<span>拍摄时间：</span><span class="t-pro">{{item.book_time}}</span> <br />
+		          		<span>拍摄时间：</span><span class="t-pro">{{item.book_time}}</span><br />
 		          		<span>门店电话：</span><a href="#" class="t-pro">{{item.user_telephone}}</a>
+		          		<div class="imgcell" v-show="item.thumb_photos!=null">
+				    		<span>图片下载：</span>
+				    		<ul class="imgs">
+				    			<li v-for="(citem,cindex) in item.thumb_photos" @click="popImg(index,cindex)"><img src="images/loading.jpg"/></li>
+				    		</ul>
+				    	</div>
 		          	</div>
 		          	<div class="foot">
 		          		价格：<font class="t-red">￥{{item.order_money}}</font>
@@ -36,12 +42,16 @@
 		        </ul>
 		        <div slot="bottom" class="mint-loadmore-bottom">
 		          <span v-show="bottomStatus !== 'end'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
-		          <!--<span v-show="bottomStatus === 'loading'">
-		            <mt-spinner type="snake"></mt-spinner>
-		          </span>-->
 		          <span v-show="bottomStatus == 'end'">没有更多了</span>
 		        </div>
 		    </div>
+		</div>
+		<div class="img_pop" v-bind:class="{show:show_img}">
+			<div class="cont">
+				<div class="close" v-on:click="{show_img=false}"><img src="images/close.png"/></div>
+				<div class="tit">长按保存图片到手机</div>
+				<img v-bind:src="bigImg" alt="大图" class="big_img"/>
+			</div>
 		</div>
 	</div>
     
@@ -68,11 +78,13 @@
 				page: 1,
 				totalPage:1,
 				scrolled: false,
-				isLoading: true
+				isLoading: true,
+				show_img:false,
+				bigImg:'images/loading.jpg'
 			},
 			components: {},
 			methods: {
-				fetchData(url) {
+				fetchData:function(url) {
 					var self = this;
 					$.get(url,function(respond){
 						if(respond.code == 1) {
@@ -95,19 +107,23 @@
 						}
 					});
 				},
-				reLoadList(status) {
+				reLoadList:function(status) {
 					this.isReload = true;
 					this.page=1;
 					this.fetchData(this.navList[this.selected].url+"&page=1");
 				},
-				addList() {
+				addList:function() {
 					this.fetchData(this.navList[this.selected].url);
 				},
-				gotoPay(oid){
+				gotoPay:function(oid){
 					window.location.href="./orderdetail.html?oid="+oid;
-				}
+				},
+		    	popImg:function(a,b){
+		    		this.show_img=true;
+		    		this.bigImg=this.orderList[a].photos[b];
+		    	}
 			},
-			mounted() {
+			mounted:function() {
 				this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top;
 				var scrollBox = document.getElementById("mybox");
 				var _this = this;
@@ -122,7 +138,7 @@
 					}
 				}
 			},
-			created() {
+			created:function() {
 				this.fetchData(this.navList[this.selected].url);
 			}
 		})
