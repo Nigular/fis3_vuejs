@@ -17,6 +17,7 @@
 		        <ul class="page-loadmore-list">
 		          <li v-for="(item,index) in orderList" class="page-loadmore-listitem">
 		          	<div class="head">订单号：<span class="t-pro">{{item.order_no}}</span>
+		          		<font v-if="item.status==-1">已关闭</font>
 		          		<font v-if="item.status==1">已付款</font>
 		          		<font v-if="item.status==0">未付款</font>
 		          		<font v-if="item.status==2">已退款</font>
@@ -30,13 +31,14 @@
 		          		<div class="imgcell" v-show="item.thumb_photos!=null">
 				    		<span>图片下载：</span>
 				    		<ul class="imgs">
-				    			<li v-for="(citem,cindex) in item.thumb_photos" @click="popImg(index,cindex)"><img src="images/loading.jpg"/></li>
+				    			<li v-for="(citem,cindex) in item.thumb_photos" @click="popImg(index,cindex)"><img v-bind:src="citem"/></li>
 				    		</ul>
 				    	</div>
 		          	</div>
 		          	<div class="foot">
 		          		价格：<font class="t-red">￥{{item.order_money}}</font>
-		          		<button @click="gotoPay(item.id)">去付款</button>
+		          		<button @click="gotoPay(item.id)" v-if="item.status==0">去付款</button>
+		          		<button @click="gotoPay(item.id)" v-if="item.status==1">申请退款</button>
 		          	</div>
 		          </li>
 		        </ul>
@@ -48,7 +50,7 @@
 		</div>
 		<div class="img_pop" v-bind:class="{show:show_img}">
 			<div class="cont">
-				<div class="close" v-on:click="{show_img=false}"><img src="images/close.png"/></div>
+				<div class="close" v-on:click="show_img=false"><img src="images/close.png"/></div>
 				<div class="tit">长按保存图片到手机</div>
 				<img v-bind:src="bigImg" alt="大图" class="big_img"/>
 			</div>

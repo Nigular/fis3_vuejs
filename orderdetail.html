@@ -9,20 +9,22 @@
 	<body class="page_orderdetail">
 		
     <div id="app" v-cloak>
+    	<div v-show="orderPath.status<1">
     	<div class="top_tip" v-if="expireTime>0">支付剩余时间：<span id="cutdowntime" v-bind:data-t="expireTime">waiting...</span></div>
-    	<div class="top_tip" v-if="expireTime<=0">付款超时 订单失效</div>
+    	<div class="top_tip" v-if="expireTime<=0">付款超时 订单已关闭</div>
+    	</div>
     	<div class="cell">
     		<span>拍摄地址：</span><span>广州市天河店</span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span>拍摄时间：</span><span>{{orderPath.book_date}} {{orderPath.book_time}}</span>
+    		<span>拍摄时间：</span><span>{{orderPath.book_date}} {{orderPath.book_time}}</span><a v-if="orderPath.status==0" v-bind:href="'date.html?oid='+orderId">重新选择</a>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span>拍摄内容：</span>
+    		<span>拍摄内容：</span><a v-if="orderPath.status==0" v-bind:href="'detail.html?pid='+orderPath.product_id+'&oid='+orderPath.id">重新选择</a>
     	</div>
-    	<div class="cell">
+    	<div class="cell" v-if="orderPath.product_info">
     		<span class="f_main">{{orderPath.product_info.title}}</span><span class="f_r f_red">￥{{orderPath.product_info.money}}</span>
     	</div>
     	<div class="cell" v-if="orderPath.is_four==1">
@@ -53,11 +55,11 @@
     		<span class="f_main">预付定金</span><span class="f_r f_red">￥{{orderPath.book_money}}</span>
     	</div>
     	<div class="cell" style="margin-top:0.2rem;">
-    		<span class="c-left"><b class="f_red">*</b>姓名：</span><span><input type="text" v-bind:value="orderPath.user_name" id="name" placeholder="请输入姓名"/></span>
+    		<span class="c-left"><b class="f_red">*</b>姓名：</span><span><input type="text" v-model="user_name" id="name" placeholder="请输入姓名"/></span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span class="c-left">生日：</span><input type="text" id="picktime" value="" placeholder="选填" readonly="readonly">
+    		<span class="c-left">生日：</span><input type="text" @click="open('picker1')" v-model="birthday" placeholder="选填" readonly="readonly">
     	</div>
     	<div class="line"></div>
     	<div class="cell">
@@ -67,11 +69,11 @@
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span class="c-left"><b class="f_red">*</b>手机：</span><span><input type="text" id="telephone" v-bind:value="orderPath.user_telephone" placeholder="请输入手机号码"/></span>
+    		<span class="c-left"><b class="f_red">*</b>手机：</span><span><input type="text" id="telephone" v-model="user_telephone" placeholder="请输入手机号码"/></span>
     	</div>
     	<div class="line"></div>
     	<div class="cell">
-    		<span class="c-left">邮箱：</span><input type="text" id="email" v-bind:value="orderPath.user_email" placeholder="选填"/>
+    		<span class="c-left">邮箱：</span><input type="text" id="email" v-model="user_email" placeholder="选填"/>
     	</div>
     	<div class="imgcell" style="margin-top:0.2rem;" v-show="orderPath.thumb_photos!=null">
     		<span>图片下载：</span>
@@ -79,15 +81,23 @@
     			<li v-for="(item,index) in orderPath.thumb_photos" @click="popImg(index)"><img v-bind:src="item"/></li>
     		</ul>
     	</div>
-    	<div class="what" v-on:click="{is_pop=true}" style="margin-bottom: 2rem;"><b>?</b><span>退款规则</span></div>
-    	<div class="fix_bottom">
+    	<div class="what" v-on:click="is_pop=true" style="margin-bottom: 2rem;"><b>?</b><span>退款规则</span></div>
+    	<div class="fix_bottom" v-if="orderPath.status==0">
     		<div class="btn" @click="goBack">返回</div>
-    		<div class="f_r">定金总计：<span class="f_red f_30">￥{{orderPath.book_money}}</span><div class="btn spe" @click="toPay">去付款</div></div>
+    		<div class="f_r">定金总计：<span class="f_red f_30">￥{{orderPath.book_money}}</span>
+    		<div class="btn spe" @click="toPay">去付款</div></div>
     	</div>
-    	
+    	<div class="fix_bottom" v-if="orderPath.status==1">
+    		<div class="btn" @click="goBack">返回</div>
+    		<div class="f_r">已付定金：<span class="f_red f_30">￥{{orderPath.book_money}}</span>
+    		<div class="btn spe" @click="refund">申请退款</div></div>
+    	</div>
+    	<div class="fix_bottom" v-if="orderPath.status==-1">
+    		<div class="btn" @click="goBack">返回</div>
+    	</div>
     	<div class="pop" v-show="is_pop" v-cloak>
 			<div class="cont">
-				<div class="close" v-on:click="{is_pop=false}"><img src="images/close.png"/></div>
+				<div class="close" v-on:click="is_pop=false"><img src="images/close.png"/></div>
 				<div class="tit f-40">退款规则</div>
 				<p>距拍摄时间<span class="f-40 c-green">72</span>小时以上取消订单，<br /> 退<span class="f-40 c-red">99%</span>订金。</p>
 				<p>距拍摄时间<span class="f-40 c-green">48</span>至<span class="f-40 c-green">72</span>小时取消订单，<br /> 退<span class="f-40 c-red">50%</span>订金。</p>
@@ -98,28 +108,45 @@
 		
 		<div class="img_pop" v-bind:class="{show:show_img}">
 			<div class="cont">
-				<div class="close" v-on:click="{show_img=false}"><img src="images/close.png"/></div>
+				<div class="close" v-on:click="show_img=false"><img src="images/close.png"/></div>
 				<div class="tit">长按保存图片到手机</div>
 				<img v-bind:src="bigImg" alt="大图" class="big_img"/>
 			</div>
 		</div>
+		
+		<mt-datetime-picker
+	      ref="picker1"
+	      type="date"
+	      v-model="value1"
+	      v-bind:start-date="startDay"
+	      v-bind:end-date="endDay"
+	      year-format="{value} 年"
+	      month-format="{value} 月"
+	      date-format="{value} 日"
+	      @confirm="handleChange">
+	    </mt-datetime-picker>
 	</div>
 	
     <link rel="import" href="./modules/_template_script.html?__inline">
-    <!--<script src="lib/zepto.mdatetimer.js" type="text/javascript" charset="utf-8"></script>-->
-    <script src="/Public/home/lib/zepto.mdatetimer.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript">
     	var app = new Vue({
 		  	el: '#app',
 			data: {
 				is_pop:false,
 				show_img:false,
-				bigImg:'images/loading.jpg',
+				bigImg:'',
 				orderId: 0,
 				orderPath: [],
 				packageList: [],
 				expireTime:0,
-				_p:0			//支付参数
+				_p:0,
+				value1: new Date(2000,0,12),
+				startDay:new Date(1960,0,12),
+				endDay:new Date(),
+				birthday:"",
+				user_name:"",
+				user_email:"",
+				user_telephone:""
 			},
 			methods: {
 				goBack: function() {
@@ -130,11 +157,23 @@
 		    		setInterval(function(){
 		    			var n=parseInt($("#cutdowntime").data("t"));
 		    			n--;
+		    			if(n<0){n=0}
 		    			$("#cutdowntime").data("t",n);
 		    			var showtime=_this.toTime(n);
 		    			$("#cutdowntime").text(showtime);
 		    		},1000)
 		    	},
+		    	open:function(picker) {
+			        this.$refs[picker].open();
+			    },
+		    	handleChange:function(value) {
+		    		var y=value.getFullYear();
+		    		var m=value.getMonth()+1;
+		    		var d=value.getDate();
+		    		if(m<10){m="0"+m};
+		    		if(d<10){d="0"+d};
+		    		this.birthday=y+''+m+''+d;
+			    },
 				toPay:function(){
 					var _this=this;
 					_this.$indicator.open();
@@ -143,7 +182,7 @@
 						order_id:_this.orderId,
 						name:$("#name").val(),
 						sex:$("input[name='sex']:checked").val(),
-						birthday:$("#picktime").val(),
+						birthday:_this.birthday,
 						telephone:$("#telephone").val(),
 						email:$("#email").val()
 					}
@@ -159,6 +198,24 @@
 							});
 				  		}
 					})
+				},
+				refund:function(){
+					var _this=this;
+					this.$messagebox.confirm("确定要申请退款吗？", '提示').then(function(){
+						$.post(API_applyRefund,{order_id:_this.orderId},function(respond){
+							if(respond.code==1){
+								_this.$toast({
+								  message: "退款成功",
+								  duration: 2000
+								});
+							}else{
+								_this.$toast({
+								  message: respond.msg,
+								  duration: 2500
+								});
+							};
+						});
+					});;
 				},
 				toTime:function(time){
 		    		var h=parseInt(time/3600);
@@ -184,9 +241,17 @@
 			  		if(respond.code==1){
 			  			_this.orderPath=respond.order;
 			  			_this.packageList=respond.package_list;
+			  			_this.birthday=respond.order.user_birthday==0?'':respond.order.user_birthday;
+			  			_this.user_name=respond.order.user_name;
+			  			_this.user_telephone=respond.order.user_telephone;
 			  			_this.expireTime=respond.order.expire_time;
 			  			_this._p=respond.order.p;
 			  			_this.cutDownTime();//开始倒计时
+			  			if(respond.order.user_sex=="1"){
+			  				$("input[name='sex']").get(0).checked=true; 
+			  			}else if(respond.order.user_sex=="2"){
+			  				$("input[name='sex']").get(1).checked=true; 
+			  			}
 			  		}else{
 			  			_this.$toast({
 						  message: respond.msg,
@@ -194,21 +259,6 @@
 						});
 			  		}
 			  	});
-			  	
-			  	setTimeout(function(){
-			  		var setYears=[];
-			  		for(i=1950;i<=2017;i++){
-			  			setYears.push(i);
-			  		}
-			  		$('#picktime').mdatetimer({
-						mode : 1, //时间选择器模式：1：年月日，2：年月日时分（24小时），3：年月日时分（12小时），4：年月日时分秒。默认：1
-						format : 2, //时间格式化方式：1：2015年06月10日 17时30分46秒，2：2015-05-10  17:30:46。默认：2
-						years : setYears, //年份数组
-						nowbtn : true, //是否显示现在按钮
-						onOk : function(){},
-						onCancel : function(){}
-					});	
-			  	},1000);
 		  	}
 		});
 		

@@ -12,20 +12,20 @@
 	    		<div class="img">
 	    			<img class="avatar" v-bind:src="item.cover_img" alt="图片丢失"/>
 	    			<!--<div class="cover"><img src="images/tick.png"/></div>-->
-	    			<div class="cover"><img src="/Public/home/images/tick.png"/></div>
+	    			<div class="cover"><img src="images/tick.png"/></div>
 	    		</div>
 	    		<div class="tit">{{item.title}}</div>
 	    		<div class="m-tit">{{item.title_en}}</div>
 	    		<div class="price"><font>￥</font>{{item.money-item.reduce_money}}</div>
 	    		<s class="d-price">{{item.money}}</s>
-	    		<!--<div class="add"><img src="images/add.png"/></div>-->
-	    		<div class="add"><img src="/Public/home/images/add.png"/></div>
+	    		<div class="add"><img src="images/add.png"/></div>
 	    		<div class="reduce_money">立减{{item.reduce_money}}元</div>
 	    	</li>
 	    </div>
+	    <div class="noData" v-show="list.length==0">该产品暂无组合套餐</div>
 	    <div class="ctrl">
 	  		<div class="pre" @click="goBack">返回</div>
-	  		<div class="next" @click="savePackage"><font>共计：</font>￥{{total}}&nbsp;下一步</div>
+	  		<div class="next" @click="savePackage"><font>共计：</font>￥{{total+orderMoney}}&nbsp;下一步</div>
 	  	</div>
 	</div>
     <link rel="import" href="./modules/_template_script.html?__inline">
@@ -36,13 +36,16 @@
 		  	list:[],
 		    package_ids:[],
 		    total:0,
-		    orderId:0
+		    orderId:0,
+		    pid:0,
+		    orderMoney:0
 		  },
 		  created:function(){
 		  	var _this=this;
 		  	var oid=GetQueryString("oid");
 		  	var pid=GetQueryString("pid");
 		  	this.orderId=oid;
+		  	this.pid=pid;
 		  	$.post(API_getPackages,{product_id:pid,order_id:oid},function(respond){
 		  		if(respond.code==1){
 		  			_this.list=respond.list;
@@ -54,11 +57,12 @@
 					  duration: 2000
 					});
 		  		}
-		  	})
+		  	});
+		  	
 		  },
 		  methods:{
 		  	goBack:function(){
-		  		window.history.go(-1);
+		  		location.href="detail.html?pid="+this.pid+"&oid="+this.orderId;
 		  	},
 		  	selectedPackage:function(id) { 
 		  		var selectId = id;
@@ -94,7 +98,18 @@
 			}
 		  },
 		  mounted:function(){
-		  	this.orderId=GetQueryString("oid");
+		  	
+		  	var _this=this;
+		  	$.post(API_getOrderById,{order_id:_this.orderId},function(respond){
+		  		if(respond.code==1){
+		  			_this.orderMoney=parseInt(respond.order.order_money);
+		  		}else{
+		  			_this.$toast({
+					  message: respond.msg,
+					  duration: 2000
+					});
+		  		}
+		  	});
 		  }
 		});
     </script>
