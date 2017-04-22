@@ -310,11 +310,15 @@ body{max-width: 750px;margin: 0 auto;}
                 }
             }
         }
+        .tip{
+            color: #999;margin-top: 0.5rem;font-size: @f_24;
+        }
     }
     .ctrl{
         clear: both;
         font-size: @f_30;
-        margin-top: 1.2rem;
+        margin-top: 0.8rem;
+        overflow: hidden;padding-bottom: 0.5rem;
         .pre{
             color: @c_green;
             background-color: #FFFFFF;
@@ -443,6 +447,7 @@ body{max-width: 750px;margin: 0 auto;}
         clear: both;
         font-size: @f_30;
         margin-top: 0.8rem;
+        overflow: hidden;padding-bottom: 0.5rem;
         .pre{
             color: @c_green;
             background-color: #FFFFFF;
@@ -606,7 +611,7 @@ body{max-width: 750px;margin: 0 auto;}
         text-align: center;margin-top: 1rem;margin-bottom: 0.3rem;
         span{
             color: #fff;
-        background: #4CAF50;
+        background: @c_green;
         padding: 2px 4px;
         }
         .month{

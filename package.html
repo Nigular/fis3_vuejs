@@ -38,7 +38,8 @@
 		    total:0,
 		    orderId:0,
 		    pid:0,
-		    orderMoney:0
+		    orderMoney:0,
+		    bookTime:0
 		  },
 		  created:function(){
 		  	var _this=this;
@@ -87,7 +88,11 @@
 				//保存套餐
 				$.post(API_savePackage,{order_id:_this.orderId,package_ids:_this.package_ids},function(respond){
 					if(respond.code==1){
-						location.href="date.html?oid="+_this.orderId;
+						if(_this.bookTime!=0){
+							location.href="orderdetail.html?oid="+_this.orderId;
+						}else{
+							location.href="date.html?oid="+_this.orderId;
+						}
 					}else{
 						_this.$toast({
 						  message: respond.msg,
@@ -103,6 +108,7 @@
 		  	$.post(API_getOrderById,{order_id:_this.orderId},function(respond){
 		  		if(respond.code==1){
 		  			_this.orderMoney=parseInt(respond.order.order_money);
+		  			_this.bookTime=respond.order.book_time;
 		  		}else{
 		  			_this.$toast({
 					  message: respond.msg,

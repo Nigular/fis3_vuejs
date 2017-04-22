@@ -23,6 +23,9 @@
 		  		<li v-bind:class="{active:choose_nine}" v-on:click="setNine" v-if="product.is_nine==1">九宫格</li>
 		  		<li v-bind:class="{active:choose_prop}" v-on:click="setProp" v-if="product.is_prop==1">加道具</li>
 		  	</div>
+		  	<div class="tip">
+		  		说明：亲子照与couple2人以上没有4宫格、9宫格。
+		  	</div>
 		</div>
 		<div class="ctrl">
 	  		<div class="pre" @click="goBack">返回</div>
