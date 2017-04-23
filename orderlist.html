@@ -23,7 +23,7 @@
 		          		<font v-if="item.status==2">已退款</font>
 		          	</div>
 		          	<div class="cont">
-		          		<span>客户姓名:</span>{{item.user_name}} <br />
+		          		<span>客户姓名：</span>{{item.user_name}} <br />
 		          		<span>拍摄内容：</span>{{item.product_name}} <br />
 		          		<span>拍摄日期：</span><span class="t-pro">{{item.book_date}}</span><br />
 		          		<span>拍摄时间：</span><span class="t-pro">{{item.book_time}}</span><br />
@@ -38,7 +38,7 @@
 		          	<div class="foot">
 		          		价格：<font class="t-red">￥{{item.order_money}}</font>
 		          		<button @click="gotoPay(item.id)" v-if="item.status==0">去付款</button>
-		          		<button @click="gotoPay(item.id)" v-if="item.status==1">申请退款</button>
+		          		<button @click="gotoPay(item.id)" v-if="item.status==1" v-bind:class="{gray:item.refund_flag==0}">申请退款</button>
 		          	</div>
 		          </li>
 		        </ul>
@@ -121,8 +121,9 @@
 					window.location.href="./orderdetail.html?oid="+oid;
 				},
 		    	popImg:function(a,b){
-		    		this.show_img=true;
-		    		this.bigImg=this.orderList[a].photos[b];
+		    		//this.show_img=true;
+		    		//this.bigImg=this.orderList[a].photos[b];
+		    		location.href="./download.html?img="+this.orderList[a].photos[b];
 		    	}
 			},
 			mounted:function() {

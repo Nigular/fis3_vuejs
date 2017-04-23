@@ -12,6 +12,9 @@ body{max-width: 750px;margin: 0 auto;}
     width: 100%;height: 64/75rem;background: @c_green;
     text-align: center;color: #FFFFFF;line-height: 64/75rem;
 }
+.emptyDiv{
+    width: 100%;height: 3rem;
+}
 
 //预约须知页
 .page_notice{
@@ -125,13 +128,13 @@ body{max-width: 750px;margin: 0 auto;}
         }
     }
     .mint-swipe {
-        height: 500/75rem;
+        height: 340/75rem;
         color: #fff;
         text-align: center;
     }
 
     .mint-swipe-item {
-        line-height: 500/75rem;
+        line-height: 340/75rem;
     }
 
     .slide {
@@ -165,8 +168,8 @@ body{max-width: 750px;margin: 0 auto;}
                 font-size: @f_30;   
             }
         }
-    
     }
+    
     .page-loadmore {
       .page-loadmore-listitem {
         background: #FFFFFF;
@@ -210,6 +213,10 @@ body{max-width: 750px;margin: 0 auto;}
                 border-radius: 3px;
                 margin-left: 0.3rem;
                 outline: none;
+                &.gray{
+                    background: #C5C5C5;
+                    color: #FFFFFF;pointer-events: none;
+                }
             }
         }
       }
@@ -277,6 +284,9 @@ body{max-width: 750px;margin: 0 auto;}
         .info{
             line-height: 2;
             margin: 0.3rem 0;
+            img{
+                max-width: 100%;
+            }
         }
         .m-tit{
             font-size: @f_36;
@@ -315,9 +325,8 @@ body{max-width: 750px;margin: 0 auto;}
         }
     }
     .ctrl{
-        clear: both;
+        clear: both; position: fixed;bottom: 0.5rem;width: 100%;
         font-size: @f_30;
-        margin-top: 0.8rem;
         overflow: hidden;padding-bottom: 0.5rem;
         .pre{
             color: @c_green;
@@ -448,6 +457,7 @@ body{max-width: 750px;margin: 0 auto;}
         font-size: @f_30;
         margin-top: 0.8rem;
         overflow: hidden;padding-bottom: 0.5rem;
+        position: fixed;bottom: 0.5rem;width: 100%;
         .pre{
             color: @c_green;
             background-color: #FFFFFF;
@@ -533,6 +543,10 @@ body{max-width: 750px;margin: 0 auto;}
             &.spe{
                 background: @c_green;
                 color: #FFFFFF;
+            }
+            &.gray{
+                background: #C5C5C5;
+                color: #FFFFFF;pointer-events: none;
             }
         }
     }
@@ -636,6 +650,9 @@ body{max-width: 750px;margin: 0 auto;}
             &.today{
                 box-shadow: 1px 1px 3px;
             }
+            &.not{
+                pointer-events: none;color: #CCCCCC;
+            }
             &.active{
                 background: #ff8e86;color: #FFFFFF;
             }
@@ -663,7 +680,7 @@ body{max-width: 750px;margin: 0 auto;}
     .ctrl{
         clear: both;
         font-size: @f_30;
-        margin-top: 0.8rem;
+        position: fixed;bottom: 0.5rem;width: 100%;
         .pre{
             color: @c_green;
             background-color: #FFFFFF;
@@ -690,3 +707,16 @@ body{max-width: 750px;margin: 0 auto;}
     }
 }
 
+/**底片下载**/
+.page_download{
+    .title{
+        width: 100%;text-align: center;
+        font-size: @f_36;color: #999;line-height: 2;
+    }
+    .content{
+        .big_img{width: 100%;}
+    }
+    .tip{
+        text-align: center;padding: 0.3rem;color: #999999;
+    }
+}

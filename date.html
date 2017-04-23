@@ -23,7 +23,7 @@
 		    	<li>周日</li>
 		    </div>
 			<div id="content" class="content">
-				<a class="date1" v-for="item in days" v-bind:class="{today:item==day && istoday}" v-on:click="setday(item)">{{item}}</a>
+				<a class="date1" v-for="item in days" v-bind:class="[{today:item==day && istoday},{not:item<day && istoday}]" v-on:click="setday(item)">{{item}}</a>
 			</div>
 			<div class="ctrl">
 		  		<div class="pre" @click="goBack">返回</div>
@@ -105,6 +105,13 @@
 					$(".date1").removeClass("active");
 				},
 				viewpre: function() {
+					if(this.year==new Date().getFullYear() && this.month==new Date().getMonth() + 1){
+						this.$toast({
+						  	message: "上一月不可选",
+						  	duration: 2000
+						});
+						return false;
+					}
 					this.month--;
 					if(this.month == 0) {
 						this.month = 12;

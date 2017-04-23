@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>底片下载</title>
+		<link rel="import" href="./modules/_template_mate.html?__inline">
+	</head>
+	<body class="page_download">
+	<div id="app">
+		<div class="title">长按下图3秒，可保存到手机</div>
+		<div class="content">
+			<img src="images/load.jpg" class="big_img" alt="图片加载中"/>
+		</div>
+		<div class="tip">微信可能会自动压缩上面的图片，如需原尺寸照片，请点击右上角菜并选用Safari中打开本页</div>
+	</div>
+    
+    <link rel="import" href="./modules/_template_script.html?__inline">
+    <script type="text/javascript">
+    	var app = new Vue({
+		  el: '#app',
+		  data: {
+		  },
+		  methods:{
+		  },
+		  mounted:function(){
+		  	var imgurl=GetQueryString("img");
+		  	var myimg=new Image();
+	        myimg.src=imgurl;
+	        myimg.onload=function(){
+	            $(".big_img").attr("src",imgurl);
+	        }
+		  }
+		})
+    </script>
+	</body>
+</html>

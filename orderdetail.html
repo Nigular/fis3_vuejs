@@ -90,7 +90,7 @@
     	<div class="fix_bottom" v-if="orderPath.status==1">
     		<div class="btn" @click="goBack">返回</div>
     		<div class="f_r">已付定金：<span class="f_red f_30">￥{{orderPath.book_money}}</span>
-    		<div class="btn spe" @click="refund">申请退款</div></div>
+    		<div class="btn spe" @click="refund" v-bind:class="{gray:orderPath.refund_flag==0}">申请退款</div></div>
     	</div>
     	<div class="fix_bottom" v-if="orderPath.status==-1">
     		<div class="btn" @click="goBack">返回</div>
@@ -227,8 +227,9 @@
 					return h+":"+m+":"+s;
 		    	},
 		    	popImg:function(index){
-		    		this.show_img=true;
-		    		this.bigImg=this.orderPath.photos[index];
+		    		//this.show_img=true;
+		    		//this.bigImg=this.orderPath.photos[index];
+		    		location.href="./download.html?img="+this.orderPath.photos[index];
 		    	}
 			},
 			filters:{

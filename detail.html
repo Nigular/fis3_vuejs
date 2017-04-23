@@ -14,18 +14,21 @@
 		  	<div class="title">{{product.title}}<span>{{product.title_en}}</span></div>
 		  	<div class="money"><span>{{product.money}}</span>/套</div>
 		  	<p class="info" v-html="product.content"></p>
-		  	<div class="m-tit">
-		  		升级体验<span>（非必选）</span>
-		  		<span class="what" v-on:click="is_pop=true"><b>?</b>什么是升级体验</span>
+		  	<div v-show="product.is_four==1 || product.is_nine==1 || product.is_prop==1">
+			  	<div class="m-tit">
+			  		升级体验<span>（非必选）</span>
+			  		<span class="what" v-on:click="is_pop=true"><b>?</b>什么是升级体验</span>
+			  	</div>
+			  	<div class="package">
+			  		<li v-bind:class="{active:choose_four}" v-on:click="setFour" v-if="product.is_four==1">四宫格</li>
+			  		<li v-bind:class="{active:choose_nine}" v-on:click="setNine" v-if="product.is_nine==1">九宫格</li>
+			  		<li v-bind:class="{active:choose_prop}" v-on:click="setProp" v-if="product.is_prop==1">加道具</li>
+			  	</div>
+			  	<div class="tip">
+			  		说明：亲子照与couple2人以上没有4宫格、9宫格。
+			  	</div>
 		  	</div>
-		  	<div class="package">
-		  		<li v-bind:class="{active:choose_four}" v-on:click="setFour" v-if="product.is_four==1">四宫格</li>
-		  		<li v-bind:class="{active:choose_nine}" v-on:click="setNine" v-if="product.is_nine==1">九宫格</li>
-		  		<li v-bind:class="{active:choose_prop}" v-on:click="setProp" v-if="product.is_prop==1">加道具</li>
-		  	</div>
-		  	<div class="tip">
-		  		说明：亲子照与couple2人以上没有4宫格、9宫格。
-		  	</div>
+		  	<div class="emptyDiv"></div>
 		</div>
 		<div class="ctrl">
 	  		<div class="pre" @click="goBack">返回</div>
@@ -36,9 +39,9 @@
 			<div class="cont">
 				<div class="close" v-on:click="is_pop=false"><img src="images/close.png"/></div>
 				<table border="0">
-					<tr><td>四宫格</td><td><img src="/Public/home/images/case_1.jpg"/></td></tr>
-					<tr><td>九宫格</td><td><img src="/Public/home/images/case_2.jpg"/></td></tr>
-					<tr><td>加道具</td><td><img src="/Public/home/images/case_3.jpg"/></td></tr>
+					<tr v-if="product.is_four==1"><td>四宫格</td><td><img src="/Public/home/images/case_1.jpg"/></td></tr>
+					<tr v-if="product.is_nine==1"><td>九宫格</td><td><img src="/Public/home/images/case_2.jpg"/></td></tr>
+					<tr v-if="product.is_prop==1"><td>加道具</td><td><img src="/Public/home/images/case_3.jpg"/></td></tr>
 				</table>
 			</div>			
 		</div>
